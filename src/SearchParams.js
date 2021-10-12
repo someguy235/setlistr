@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import secret from "./secret.json";
 import BandDataList from "./BandDataList.js";
 
 const SearchParams = () => {
-  const [bandName, setBandName] = useState("");
   const [bearerToken, setBearerToken] = useState(null);
   const [expiresDate, setExpiresDate] = useState(null);
+  const [bandInput, setBandInput] = useState("");
   const [bands, setBands] = useState([]);
+  const [bandName, setBandName] = useState("");
+  const [bandId, setBandId] = useState("");
 
   const CLIENT_ID = "fd89d09a42cf4a9fb0a69ec19e3432ae";
   const SECRET_ID = secret.key;
@@ -14,8 +16,8 @@ const SearchParams = () => {
     "base64"
   );
 
-  const AUTH_BASE = "https://accounts.spotify.com/api/token";
-  const SEARCH_BASE = "https://api.spotify.com/v1/search";
+  // const AUTH_BASE = "https://accounts.spotify.com/api/token";
+  const API_BASE = "https://api.spotify.com/v1";
 
   function setNewExpires(expires) {
     const currentDateObj = new Date();
@@ -58,28 +60,51 @@ const SearchParams = () => {
     }
   }
 
+  //TODO: add year constraints option
+
   async function getBandInfo() {
-    console.log("getBandInfo");
-    console.log(bandName);
-    const token = await getBearerToken();
-    console.log(token);
-    const searchUrl = SEARCH_BASE + `?q=${bandName}&type=artist&limit=10`;
-    const bandInfoRequest = await fetch(searchUrl, {
+    const bandInfoRequest = await fetch(`/api/bands/${bandInput}`, {
       method: "GET",
-      headers: {
-        Authorization: "Bearer " + token,
-      },
     });
     const bandInfo = await bandInfoRequest.json();
-    // console.log(bandInfo);
-    // console.log(bandInfo.artists.items);
-    if (bandInfo.artists && bandInfo.artists.items) {
-      setBands(bandInfo.artists.items);
-      // console.log(bandInfo.artists.items);
-    } else {
-      setBands([]);
-    }
+    console.log(bandInfo);
+
+    // const token = await getBearerToken();
+    // const searchUrl = API_BASE + `/search?q=${bandInput}&type=artist&limit=10`;
+    // const bandInfoRequest = await fetch(searchUrl, {
+    //   method: "GET",
+    //   headers: {
+    //     Authorization: "Bearer " + token,
+    //   },
+    // });
+    // const bandInfo = await bandInfoRequest.json();
+    // if (bandInfo.artists && bandInfo.artists.items) {
+    //   setBands(bandInfo.artists.items);
+    // } else {
+    //   setBands([]);
+    // }
   }
+
+  // useEffect(() => {
+  //   console.log("useEffect: " + bandId);
+  //   if (!bandId) return null;
+  //   getAlbumInfo();
+  // }, [bandId]);
+
+  // async function getAlbumInfo() {
+  //   console.log("getAlbumInfo");
+  //   const token = await getBearerToken();
+  //   const searchUrl = API_BASE + `/artists/${bandId}/albums`;
+  //   const albumInfoRequest = await fetch(searchUrl, {
+  //     method: "GET",
+  //     headers: {
+  //       Authorization: "Bearer " + token,
+  //     },
+  //   });
+  //   const albumInfo = await albumInfoRequest.json();
+  //   console.log(albumInfo);
+  //   // if(albumdInfo)
+  // }
 
   return (
     <div>
@@ -94,13 +119,18 @@ const SearchParams = () => {
           <input
             id="band-input"
             list="band-list"
-            value={bandName}
-            onChange={(e) => setBandName(e.target.value)}
+            value={bandInput}
+            onChange={(e) => setBandInput(e.target.value)}
             // type="text"
           ></input>
-          <BandDataList bands={bands} />
+          <BandDataList
+            bands={bands}
+            setBandName={setBandName}
+            setBandId={setBandId}
+          />
         </label>
       </form>
+      {bandName} : {bandId}
     </div>
   );
 };
