@@ -72,13 +72,60 @@ app.get("/api/bands/:search", async (req, res) => {
   });
   const bandInfo = await bandInfoRequest.json();
   if (bandInfo.artists && bandInfo.artists.items) {
-    // setBands(bandInfo.artists.items);
     res.json({ bands: bandInfo.artists.items });
   } else {
-    // setBands([]);
     res.json({ bands: [] });
   }
 });
+
+const cacheAlbum = async (album, db) => {
+  // console.log(album);
+
+  const artist = album.artists[0].name;
+  const name = album.name;
+  const id = album.id;
+  const href = album.href;
+  const release = album.release_date;
+  let imghref;
+  for (const img of album.images) {
+    if (img.height === 300) imghref = img.url;
+  }
+  // TODO: get image file
+  const albumObj = {
+    artist: artist,
+    name: name,
+    id: id,
+    href: href,
+    release: release,
+    img: imghref,
+  };
+
+  return albumObj;
+};
+
+const cacheAlbums = async (band, db) => {
+  let albumRes;
+  let albumInfo = [];
+  const token = await getBearerToken();
+  let searchUrl = API_BASE + `/artists/${band}/albums?include_groups=album`;
+  do {
+    const albumInfoRequest = await fetch(searchUrl, {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
+    albumRes = await albumInfoRequest.json();
+    // console.log(albumRes);
+    for (const item of albumRes.items) {
+      const info = await cacheAlbum(item, db);
+      albumInfo.push(info);
+    }
+    searchUrl = albumRes.next;
+  } while (searchUrl);
+
+  return albumInfo;
+};
 
 app.get("/api/albums/:band", async (req, res) => {
   MongoClient.connect(
@@ -86,30 +133,27 @@ app.get("/api/albums/:band", async (req, res) => {
     async function (err, client) {
       if (err) throw err;
 
-      var db = client.db("albums");
+      var db = client.db("setListr");
 
-      db.collection("mammals")
-        .find()
-        .toArray(function (err, result) {
+      const cachedResults = await db
+        .collection("albums")
+        .find({ band: req.params.band })
+        .toArray(async function (err, result) {
           if (err) throw err;
-
           console.log(result);
+          return result;
         });
-      // TODO: check db
-      // TODO: pagination
+
+      if (cachedResults && cachedResults.length !== 0)
+        res.json({ albums: cachedResults });
+
+      const liveResults = await cacheAlbums(req.params.band, db);
+
+      res.json({ albums: liveResults });
+
       // TODO: write to db
-      let albumInfo;
-      const token = await getBearerToken();
-      const searchUrl = API_BASE + `/artists/${req.params.band}/albums`;
-      const albumInfoRequest = await fetch(searchUrl, {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
-      const albumRes = await albumInfoRequest.json();
-      console.log(albumRes);
-      res.json({ albums: albumInfo });
+
+      // res.json({ albums: albumInfo });
     }
   );
 });

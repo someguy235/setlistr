@@ -31,6 +31,7 @@ const SearchParams = () => {
       method: "GET",
     });
     const res = await albumInfoRequest.json();
+    console.log(res.albums);
     setAlbums(res.albums);
     // setTracks(res.tracks);
   }
