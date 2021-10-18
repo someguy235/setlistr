@@ -1,0 +1,19 @@
+body {
+  background-color: #a49db6;
+  background-image: url("./asfalt-light.png");
+  font-family: "Montserrat", sans-serif;
+}
+
+h1 {
+  font-size: 4em;
+  text-align: center;
+}
+h1 div {
+  display: inline-block;
+}
+h1 span:first-of-type {
+  font-weight: 400;
+}
+h1 span:nth-of-type(2) {
+  font-weight: 800;
+}

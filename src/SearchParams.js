@@ -9,8 +9,9 @@ const SearchParams = () => {
   const [bandId, setBandId] = useState("");
   const [albums, setAlbums] = useState({});
 
-  //TODO: add year constraints option
-
+  // TODO: add year constraints option
+  // TODO: show just live albums, option
+  // TODO: reset button
   async function getBands() {
     const bandInfoRequest = await fetch(`/api/bands/${bandInput}`, {
       method: "GET",
@@ -45,7 +46,8 @@ const SearchParams = () => {
         }}
       >
         <label htmlFor="band-input">
-          Band Name:
+          Search for a band to get started
+          <br />
           <input
             id="band-input"
             list="band-list"
@@ -53,13 +55,13 @@ const SearchParams = () => {
             onChange={(e) => setBandInput(e.target.value)}
             // type="text"
           ></input>
-          <BandDataList
-            bands={bands}
-            setBandName={setBandName}
-            setBandId={setBandId}
-          />
         </label>
       </form>
+      <BandDataList
+        bands={bands}
+        setBandName={setBandName}
+        setBandId={setBandId}
+      />
       {bandName} : {bandId}
     </div>
   );

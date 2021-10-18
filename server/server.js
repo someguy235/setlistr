@@ -78,36 +78,72 @@ app.get("/api/bands/:search", async (req, res) => {
   }
 });
 
-const cacheAlbum = async (album, db) => {
-  // console.log(album);
+const getTracks = async (albumId) => {
+  console.log("getTracks: " + albumId);
+  const token = await getBearerToken();
+  const searchUrl = `https://api.spotify.com/v1/albums/${albumId}`;
+  const albumInfo = await fetch(searchUrl, {
+    method: "GET",
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  });
+  const albumJson = await albumInfo.json(); //.tracks; //.items;
+  const albumTracks = albumJson.tracks.items;
+  // console.log(albumTracks);
+
+  // TODO: format these?
+  const trackNames = albumTracks.map((track) => {
+    return track.name.split(" - ")[0];
+  });
+
+  // console.log(trackNames);
+  return trackNames;
+  // return [];
+};
+
+const getImage = async (url) => {
+  const r = await fetch(url);
+  const buf = await r.buffer();
+  const st = "data:image/png;base64," + buf.toString("base64");
+  return st;
+};
+
+const getAlbumInfo = async (album) => {
+  // console.log(album.tracks);
 
   const artist = album.artists[0].name;
   const name = album.name;
   const id = album.id;
-  const href = album.href;
+  // const href = album.href;
   const release = album.release_date;
-  let imghref;
+  // const tracks = album.tracks;
+  let imgurl;
   for (const img of album.images) {
-    if (img.height === 300) imghref = img.url;
+    if (img.height === 300) imgurl = img.url;
   }
-  // TODO: get image file
+
+  const img = await getImage(imgurl);
+  const tracks = await getTracks(id);
+
   const albumObj = {
     artist: artist,
     name: name,
     id: id,
-    href: href,
+    // href: href,
     release: release,
-    img: imghref,
+    img: img,
+    tracks: tracks,
   };
 
   return albumObj;
 };
 
-const cacheAlbums = async (band, db) => {
+const getAlbumsInfo = async (bandId, collection) => {
   let albumRes;
   let albumInfo = [];
   const token = await getBearerToken();
-  let searchUrl = API_BASE + `/artists/${band}/albums?include_groups=album`;
+  let searchUrl = API_BASE + `/artists/${bandId}/albums?include_groups=album`;
   do {
     const albumInfoRequest = await fetch(searchUrl, {
       method: "GET",
@@ -118,11 +154,16 @@ const cacheAlbums = async (band, db) => {
     albumRes = await albumInfoRequest.json();
     // console.log(albumRes);
     for (const item of albumRes.items) {
-      const info = await cacheAlbum(item, db);
+      const info = await getAlbumInfo(item);
+      info["bandId"] = bandId;
       albumInfo.push(info);
     }
     searchUrl = albumRes.next;
   } while (searchUrl);
+
+  if (albumInfo.length > 0) {
+    collection.insertMany(albumInfo);
+  }
 
   return albumInfo;
 };
@@ -133,27 +174,25 @@ app.get("/api/albums/:band", async (req, res) => {
     async function (err, client) {
       if (err) throw err;
 
-      var db = client.db("setListr");
-
-      const cachedResults = await db
-        .collection("albums")
-        .find({ band: req.params.band })
+      const db = client.db("setListr");
+      const collection = db.collection("albums");
+      // collection.drop();
+      await collection
+        .find({ bandId: req.params.band })
         .toArray(async function (err, result) {
           if (err) throw err;
-          console.log(result);
-          return result;
+          // console.log("db result");
+          // console.log(result);
+          if (result.length === 0) {
+            const liveResults = await getAlbumsInfo(
+              req.params.band,
+              collection
+            );
+            res.json({ albums: liveResults });
+          } else {
+            res.json({ albums: result });
+          }
         });
-
-      if (cachedResults && cachedResults.length !== 0)
-        res.json({ albums: cachedResults });
-
-      const liveResults = await cacheAlbums(req.params.band, db);
-
-      res.json({ albums: liveResults });
-
-      // TODO: write to db
-
-      // res.json({ albums: albumInfo });
     }
   );
 });
