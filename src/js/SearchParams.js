@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-// import secret from "./secret.json";
 import BandDataList from "./BandDataList.js";
 
 const SearchParams = () => {
@@ -12,6 +11,7 @@ const SearchParams = () => {
   // TODO: add year constraints option
   // TODO: show just live albums, option
   // TODO: reset button
+
   async function getBands() {
     const bandInfoRequest = await fetch(`/api/bands/${bandInput}`, {
       method: "GET",
@@ -27,42 +27,47 @@ const SearchParams = () => {
   }, [bandId]);
 
   async function getAlbumInfo() {
-    console.log("getAlbumInfo");
+    // console.log("getAlbumInfo");
     const albumInfoRequest = await fetch(`/api/albums/${bandId}`, {
       method: "GET",
     });
     const res = await albumInfoRequest.json();
-    console.log(res.albums);
+    // console.log(res.albums);
     setAlbums(res.albums);
     // setTracks(res.tracks);
   }
 
   return (
     <div>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          getBands();
-        }}
-      >
-        <label htmlFor="band-input">
-          Search for a band to get started
-          <br />
-          <input
-            id="band-input"
-            list="band-list"
-            value={bandInput}
-            onChange={(e) => setBandInput(e.target.value)}
-            // type="text"
-          ></input>
-        </label>
-      </form>
+      <div id="band-form-container">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            getBands();
+          }}
+        >
+          <label htmlFor="band-input">
+            Find the best setlist for you
+            <br />
+            Search for a band to get started
+            <br />
+            <input
+              id="band-input"
+              list="band-list"
+              value={bandInput}
+              onChange={(e) => setBandInput(e.target.value)}
+              // type="text"
+            ></input>
+          </label>
+        </form>
+      </div>
       <BandDataList
         bands={bands}
+        setBands={setBands}
         setBandName={setBandName}
         setBandId={setBandId}
       />
-      {bandName} : {bandId}
+      {/* {bandName} : {bandId} */}
     </div>
   );
 };

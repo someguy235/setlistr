@@ -1,0 +1,36 @@
+body {
+  background-color: #a49db6;
+  background-image: url("../img/asfalt-light.png");
+  font-family: "Montserrat", sans-serif;
+}
+
+h1 {
+  font-size: 4em;
+  text-align: center;
+}
+h1 div {
+  display: inline-block;
+}
+h1 span:first-of-type {
+  font-weight: 400;
+}
+h1 span:nth-of-type(2) {
+  font-weight: 800;
+}
+
+#band-form-container {
+  text-align: center;
+}
+#band-form-container form {
+  display: inline-block;
+  font-size: 1.2em;
+}
+#band-input {
+  font-size: 1.2em;
+  height: 30px;
+  width: 300px;
+  margin: 5px;
+}
+
+#band-options {
+}
