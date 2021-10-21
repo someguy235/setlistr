@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import BandDataList from "./BandDataList.js";
+import TrackList from "./TrackList.js";
 
 const SearchParams = () => {
   const [bandInput, setBandInput] = useState("");
   const [bands, setBands] = useState([]);
   const [bandName, setBandName] = useState("");
   const [bandId, setBandId] = useState("");
-  const [albums, setAlbums] = useState({});
+  const [albums, setAlbums] = useState([]);
 
   // TODO: add year constraints option
   // TODO: show just live albums, option
@@ -32,7 +33,7 @@ const SearchParams = () => {
       method: "GET",
     });
     const res = await albumInfoRequest.json();
-    // console.log(res.albums);
+    console.log(res.albums);
     setAlbums(res.albums);
     // setTracks(res.tracks);
   }
@@ -67,7 +68,9 @@ const SearchParams = () => {
         setBandName={setBandName}
         setBandId={setBandId}
       />
-      {/* {bandName} : {bandId} */}
+      {/* <AlbumList /> */}
+      <TrackList albums={albums} />
+      {bandName} : {bandId}
     </div>
   );
 };
