@@ -70,7 +70,7 @@ const SearchParams = () => {
       />
       {/* <AlbumList /> */}
       <TrackList albums={albums} />
-      {bandName} : {bandId}
+      {/* {bandName} : {bandId} */}
     </div>
   );
 };

@@ -1,26 +1,50 @@
 import { useEffect, useState } from "react";
 
 const getTrackInfo = (albums, setTracks) => {
-  const tracks = {};
+  const tracks = [];
+
   for (const album of albums) {
-    console.log(album);
     for (const track of album.tracks) {
-      console.log(track);
-      if (!Object.keys(tracks).contains(track)) {
-        tracks[track] = {
-          count: 0,
+      // TODO: a lot of data cleaning
+      const targetName = track;
+      const trackObj = tracks.find((t) => t.name === targetName);
+      if (trackObj) {
+        trackObj.count += 1;
+      } else {
+        tracks.push({
+          name: targetName,
+          count: 1,
           selected: false,
-        };
+        });
       }
-      tracks[track].count += 1;
+      //   if (!Object.keys(tracks).includes(track)) {
+      // tracks[track] = {
+      //   count: 0,
+      //   selected: false,
+      // };
+      //   }
+      //   tracks[track].count += 1;
     }
   }
   setTracks(tracks);
 };
 
+const getSortFn = (type) => {
+  if (type === "alpha") {
+    return (a, b) => {
+      return a.name < b.name ? -1 : 1;
+    };
+  } else if (type === "count") {
+    return (a, b) => {
+      return a.count < b.count ? -1 : 1;
+    };
+  }
+};
+
 const TrackList = (props) => {
   const { albums } = props;
-  const [tracks, setTracks] = useState({});
+  const [tracks, setTracks] = useState([]);
+  const [sort, setSort] = useState("alpha");
   //   const [trackFilter, setTrackFilter] = useState("");
 
   useEffect(() => {
@@ -29,9 +53,27 @@ const TrackList = (props) => {
 
   if (albums.length === 0) return null;
 
-  return tracks.map((track) => {
-    <div>{`${track.name} [${track.count}]`}</div>;
-  });
+  console.log(tracks);
+  tracks.sort(getSortFn(sort));
+  return (
+    <div>
+      <div>
+        Sort:
+        <button onClick={() => setSort("alpha")}>Alpha</button>
+        <button onClick={() => setSort("count")}>Count</button>
+      </div>
+      {tracks.sort(getSortFn(sort)).map((track) => {
+        return (
+          <div key={track.name}>
+            <input name={track.name} type="checkbox" />
+            <label
+              htmlFor={track.name}
+            >{`${track.name} [${track.count}]`}</label>
+          </div>
+        );
+      })}
+    </div>
+  );
 };
 
 export default TrackList;
