@@ -30,15 +30,30 @@ const getTrackInfo = (albums, setTracks) => {
 };
 
 const getSortFn = (type) => {
-  if (type === "alpha") {
-    return (a, b) => {
-      return a.name < b.name ? -1 : 1;
-    };
-  } else if (type === "count") {
-    return (a, b) => {
-      return a.count < b.count ? -1 : 1;
-    };
+  let sortFn;
+  switch (type) {
+    case "alpha":
+      sortFn = (a, b) => {
+        return a.name < b.name ? -1 : 1;
+      };
+      break;
+    case "alpha-rev":
+      sortFn = (a, b) => {
+        return a.name > b.name ? -1 : 1;
+      };
+      break;
+    case "count":
+      sortFn = (a, b) => {
+        return a.count < b.count ? -1 : 1;
+      };
+      break;
+    case "count-rev":
+      sortFn = (a, b) => {
+        return a.count > b.count ? -1 : 1;
+      };
+      break;
   }
+  return sortFn;
 };
 
 const TrackList = (props) => {
@@ -51,27 +66,49 @@ const TrackList = (props) => {
     getTrackInfo(albums, setTracks);
   }, [albums]);
 
+  const updateSort = (type) => {
+    let t;
+    switch (type) {
+      case "alpha":
+        t = sort === "alpha" ? "alpha-rev" : "alpha";
+        break;
+      case "count":
+        t = sort === "count" ? "count-rev" : "count";
+        break;
+    }
+    setSort(t);
+  };
+
   if (albums.length === 0) return null;
 
   console.log(tracks);
   tracks.sort(getSortFn(sort));
   return (
-    <div>
-      <div>
+    <div id="track-list-column">
+      <div id="sort-buttons">
         Sort:
-        <button onClick={() => setSort("alpha")}>Alpha</button>
-        <button onClick={() => setSort("count")}>Count</button>
+        <button onClick={() => updateSort("alpha")}>Alpha</button>
+        <button onClick={() => updateSort("count")}>Count</button>
       </div>
-      {tracks.sort(getSortFn(sort)).map((track) => {
-        return (
-          <div key={track.name}>
-            <input name={track.name} type="checkbox" />
-            <label
-              htmlFor={track.name}
-            >{`${track.name} [${track.count}]`}</label>
-          </div>
-        );
-      })}
+      <div id="track-list-container">
+        {tracks.sort(getSortFn(sort)).map((track) => {
+          return (
+            <div key={track.name}>
+              <div
+                role="button"
+                tabIndex="0"
+                onKeyPress={() => {}}
+                onClick={() => toggleTrack()}
+              >
+                {/* <input name={track.name} type="checkbox" /> */}
+                <label
+                  htmlFor={track.name}
+                >{`${track.name} [${track.count}]`}</label>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

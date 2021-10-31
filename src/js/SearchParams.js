@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import BandDataList from "./BandDataList.js";
 import TrackList from "./TrackList.js";
+import AlbumList from "./AlbumList.js";
 
 const SearchParams = () => {
   const [bandInput, setBandInput] = useState("");
@@ -68,9 +69,10 @@ const SearchParams = () => {
         setBandName={setBandName}
         setBandId={setBandId}
       />
-      {/* <AlbumList /> */}
-      <TrackList albums={albums} />
-      {/* {bandName} : {bandId} */}
+      <div id="column-container">
+        <TrackList albums={albums} />
+        <AlbumList />
+      </div>
     </div>
   );
 };

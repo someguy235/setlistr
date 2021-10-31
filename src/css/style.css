@@ -56,3 +56,36 @@ h1 span:nth-of-type(2) {
   /* box-shadow: 8px 8px 2px 1px teal; */
   box-shadow: 8px 8px 2px 1px #00808080;
 }
+#column-container {
+  display: grid;
+  grid-template-columns: 35% 65%;
+}
+#track-list-column {
+  grid-column: 1;
+  padding-left: 2em;
+  text-align: center;
+}
+#sort-buttons {
+  text-align: center;
+  /* margin-bottom: 1em; */
+}
+#sort-buttons button {
+  margin: 10px;
+}
+#track-list-container {
+}
+#track-list-container > div {
+  margin-bottom: 12px;
+  margin-right: 12px;
+  display: inline-block;
+}
+#track-list-container > div > div {
+  display: inline-block;
+  padding: 5px;
+  background-color: cornflowerblue;
+  box-shadow: 4px 4px 2px 1px #80008080;
+}
+
+#album-list-column {
+  grid-column: 2;
+}

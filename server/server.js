@@ -56,6 +56,10 @@ async function getBearerToken() {
   }
 }
 
+// const cleanupBandData = (bandId) => {
+// console.log(bandId);
+// };
+
 // app.get("/api/search/:search", (req, res) => {
 //   res.json({ message: "Hello from the API" });
 // });
@@ -90,16 +94,26 @@ const getTracks = async (albumId) => {
   });
   const albumJson = await albumInfo.json(); //.tracks; //.items;
   const albumTracks = albumJson.tracks.items;
-  // console.log(albumTracks);
 
-  // TODO: format these?
   const trackNames = albumTracks.map((track) => {
-    return track.name.split(" - ")[0];
+    let rTrack = track.name.split(" - ")[0];
+    rTrack = rTrack.toLowerCase();
+
+    // remove trailing 'Pt. 1' 'Pt. 2' variations
+    const ptRegex = /,?\s?pt\.?\s?[123]$/i;
+    rTrack = rTrack.replace(ptRegex, "");
+
+    // remove trailing info in parentheses
+    const trailingParensRegex = /\s*\([\s\w]*\)$/i;
+    rTrack = rTrack.replace(trailingParensRegex, "");
+
+    // remove dashes
+    rTrack = rTrack.replace("-", " ");
+
+    return rTrack;
   });
 
-  // console.log(trackNames);
   return trackNames;
-  // return [];
 };
 
 const getImage = async (url) => {
@@ -107,6 +121,11 @@ const getImage = async (url) => {
   const buf = await r.buffer();
   const st = "data:image/png;base64," + buf.toString("base64");
   return st;
+};
+
+const cleanupAlbumInfo = (albumInfo) => {
+  console.log("cleanupAlbumInfo");
+  return albumInfo;
 };
 
 const getAlbumInfo = async (album) => {
@@ -162,6 +181,7 @@ const getAlbumsInfo = async (bandId, collection) => {
   } while (searchUrl);
 
   if (albumInfo.length > 0) {
+    albumInfo = cleanupAlbumInfo(albumInfo);
     collection.insertMany(albumInfo);
   }
 
@@ -190,7 +210,8 @@ app.get("/api/albums/:band", async (req, res) => {
             );
             res.json({ albums: liveResults });
           } else {
-            res.json({ albums: result });
+            const albumInfo = cleanupAlbumInfo(result);
+            res.json({ albums: albumInfo });
           }
         });
     }
