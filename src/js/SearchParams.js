@@ -9,6 +9,7 @@ const SearchParams = () => {
   const [bandName, setBandName] = useState("");
   const [bandId, setBandId] = useState("");
   const [albums, setAlbums] = useState([]);
+  const [tracks, setTracks] = useState([]);
 
   // TODO: add year constraints option
   // TODO: show just live albums, option
@@ -70,8 +71,8 @@ const SearchParams = () => {
         setBandId={setBandId}
       />
       <div id="column-container">
-        <TrackList albums={albums} />
-        <AlbumList />
+        <TrackList albums={albums} tracks={tracks} setTracks={setTracks} />
+        <AlbumList albums={albums} tracks={tracks} />
       </div>
     </div>
   );

@@ -80,12 +80,24 @@ h1 span:nth-of-type(2) {
   display: inline-block;
 }
 #track-list-container > div > div {
+  cursor: pointer;
   display: inline-block;
   padding: 5px;
   background-color: cornflowerblue;
   box-shadow: 4px 4px 2px 1px #80008080;
 }
+#track-list-container > div > div.selected {
+  /* box-shadow: inset 4px 2px 1px #80008080; */
+  background-color: cadetblue;
+}
 
 #album-list-column {
   grid-column: 2;
+}
+
+.album-entry {
+  display: inline-block;
+}
+.album-entry img {
+  width: 150px;
 }
