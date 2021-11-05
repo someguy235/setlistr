@@ -1,5 +1,6 @@
 const express = require("express");
 const fetch = require("node-fetch");
+var _ = require("underscore");
 const secret = require("./secret.json");
 var MongoClient = require("mongodb").MongoClient;
 
@@ -113,7 +114,7 @@ const getTracks = async (albumId) => {
     return rTrack;
   });
 
-  return trackNames;
+  return _.uniq(trackNames);
 };
 
 const getImage = async (url) => {
@@ -124,7 +125,7 @@ const getImage = async (url) => {
 };
 
 const cleanupAlbumInfo = (albumInfo) => {
-  console.log("cleanupAlbumInfo");
+  // console.log("cleanupAlbumInfo");
   return albumInfo;
 };
 

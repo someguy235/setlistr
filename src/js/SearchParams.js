@@ -14,6 +14,8 @@ const SearchParams = () => {
   // TODO: add year constraints option
   // TODO: show just live albums, option
   // TODO: reset button
+  // TODO: duplicate albums?
+  // TODO: replace search field with band name
 
   async function getBands() {
     const bandInfoRequest = await fetch(`/api/bands/${bandInput}`, {
@@ -24,20 +26,16 @@ const SearchParams = () => {
   }
 
   useEffect(() => {
-    console.log("useEffect: " + bandId);
     if (!bandId) return null;
     getAlbumInfo();
   }, [bandId]);
 
   async function getAlbumInfo() {
-    // console.log("getAlbumInfo");
     const albumInfoRequest = await fetch(`/api/albums/${bandId}`, {
       method: "GET",
     });
     const res = await albumInfoRequest.json();
-    console.log(res.albums);
     setAlbums(res.albums);
-    // setTracks(res.tracks);
   }
 
   return (
@@ -59,7 +57,6 @@ const SearchParams = () => {
               list="band-list"
               value={bandInput}
               onChange={(e) => setBandInput(e.target.value)}
-              // type="text"
             ></input>
           </label>
         </form>

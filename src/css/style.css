@@ -65,11 +65,11 @@ h1 span:nth-of-type(2) {
   padding-left: 2em;
   text-align: center;
 }
-#sort-buttons {
+.sort-buttons {
   text-align: center;
   /* margin-bottom: 1em; */
 }
-#sort-buttons button {
+.sort-buttons button {
   margin: 10px;
 }
 #track-list-container {
@@ -90,14 +90,32 @@ h1 span:nth-of-type(2) {
   /* box-shadow: inset 4px 2px 1px #80008080; */
   background-color: cadetblue;
 }
-
+.track-title {
+  font-weight: 500;
+  font-size: 1.3em;
+}
+.track-score {
+  font-size: 1.3em;
+  font-weight: 600;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+.track-selected {
+  color: red;
+}
 #album-list-column {
   grid-column: 2;
 }
 
+.albums-container {
+  display: grid;
+  grid-template-columns: 25% 25% 25% 25%;
+}
 .album-entry {
   display: inline-block;
+  text-align: center;
+  margin: 10px;
 }
 .album-entry img {
-  width: 150px;
+  width: 200px;
 }

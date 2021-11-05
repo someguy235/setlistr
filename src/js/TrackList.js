@@ -100,7 +100,7 @@ const TrackList = (props) => {
   //   tracks.sort(getSortFn(sort));
   return (
     <div id="track-list-column">
-      <div id="sort-buttons">
+      <div className="sort-buttons">
         <button onClick={() => updateSort("alpha")}>
           Alpha{" "}
           {sort === "alpha" ? (
