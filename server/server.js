@@ -84,7 +84,6 @@ app.get("/api/bands/:search", async (req, res) => {
 });
 
 const getTracks = async (albumId) => {
-  console.log("getTracks: " + albumId);
   const token = await getBearerToken();
   const searchUrl = `https://api.spotify.com/v1/albums/${albumId}`;
   const albumInfo = await fetch(searchUrl, {
@@ -131,6 +130,7 @@ const cleanupAlbumInfo = (albumInfo) => {
 
 const getAlbumInfo = async (album) => {
   // console.log(album.tracks);
+  console.log(album.name);
 
   const artist = album.artists[0].name;
   const name = album.name;
@@ -163,6 +163,7 @@ const getAlbumsInfo = async (bandId, collection) => {
   let albumRes;
   let albumInfo = [];
   const token = await getBearerToken();
+  let found = [];
   let searchUrl = API_BASE + `/artists/${bandId}/albums?include_groups=album`;
   do {
     const albumInfoRequest = await fetch(searchUrl, {
@@ -172,11 +173,13 @@ const getAlbumsInfo = async (bandId, collection) => {
       },
     });
     albumRes = await albumInfoRequest.json();
-    // console.log(albumRes);
     for (const item of albumRes.items) {
-      const info = await getAlbumInfo(item);
-      info["bandId"] = bandId;
-      albumInfo.push(info);
+      if (!found.includes(item.name)) {
+        const info = await getAlbumInfo(item);
+        info["bandId"] = bandId;
+        albumInfo.push(info);
+        found.push(item.name);
+      }
     }
     searchUrl = albumRes.next;
   } while (searchUrl);

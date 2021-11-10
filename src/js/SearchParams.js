@@ -14,8 +14,8 @@ const SearchParams = () => {
   // TODO: add year constraints option
   // TODO: show just live albums, option
   // TODO: reset button
-  // TODO: duplicate albums?
   // TODO: replace search field with band name
+  // TODO: d3 layout, transitions
 
   async function getBands() {
     const bandInfoRequest = await fetch(`/api/bands/${bandInput}`, {
@@ -35,6 +35,7 @@ const SearchParams = () => {
       method: "GET",
     });
     const res = await albumInfoRequest.json();
+    console.log(res.albums);
     setAlbums(res.albums);
   }
 
