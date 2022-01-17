@@ -1,17 +1,16 @@
 const BandDataList = (props) => {
   const { bands, setBands, setBandId, setBandName } = props;
-  if (bands.length === 0) return null;
 
   const handleChange = (e) => {
-    console.log("handleChange");
-    // console.log(e.target);
-    // console.log(e.target.dataset);
-    // console.log(e.target.dataset.bandname);
-    console.log(e.target.dataset.bandid);
-    setBandId(e.target.dataset.bandid);
-    setBandName(e.target.dataset.bandname);
-    setBands([]);
+    const bandname = e.target.dataset.bandname;
+    const bandid = e.target.dataset.bandid;
+
+    setBandId(bandid);
+    setBandName(bandname);
+    setBands([{ name: bandname, id: bandid }]);
   };
+
+  if (bands.length === 0) return null;
 
   return (
     <div id="band-options">

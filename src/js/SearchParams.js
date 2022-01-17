@@ -14,7 +14,6 @@ const SearchParams = () => {
   // TODO: add year constraints option
   // TODO: show just live albums, option
   // TODO: reset button
-  // TODO: replace search field with band name
   // TODO: d3 layout, transitions
 
   async function getBands() {
@@ -69,8 +68,13 @@ const SearchParams = () => {
         setBandId={setBandId}
       />
       <div id="column-container">
-        <TrackList albums={albums} tracks={tracks} setTracks={setTracks} />
-        <AlbumList albums={albums} tracks={tracks} />
+        <TrackList
+          bands={bands}
+          albums={albums}
+          tracks={tracks}
+          setTracks={setTracks}
+        />
+        <AlbumList bands={bands} albums={albums} tracks={tracks} />
       </div>
     </div>
   );

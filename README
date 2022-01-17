@@ -1,0 +1,7 @@
+This page answers a very specific question: what album from a given artist has 
+the most tracks that I like? 
+Mostly useful for bands with lots of live albums like The Grateful Dead or Phish.
+
+% brew services start mongodb-community
+% npm run start
+% npm run dev

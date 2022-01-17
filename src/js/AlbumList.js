@@ -18,6 +18,7 @@ const calculateAlbumScores = (albums, tracks) => {
     album.score = scores[album.id] || 0;
   });
 
+  // TODO: should return a new object
   //   return scores;
 };
 
@@ -60,10 +61,10 @@ const getSelectedTracks = (tracks) => {
 };
 
 const AlbumList = (props) => {
-  const { albums, tracks } = props;
+  const { bands, albums, tracks } = props;
   const [showTracks, setShowTracks] = useState(false);
 
-  if (albums.length === 0) return null;
+  if (albums.length === 0 || bands.length > 1) return null;
 
   calculateAlbumScores(albums, tracks);
   const selectedTracks = getSelectedTracks(tracks);

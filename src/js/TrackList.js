@@ -18,11 +18,16 @@ const TrackEntry = (props) => {
 };
 
 const TrackList = (props) => {
-  const { albums, tracks, setTracks } = props;
-  //   const [tracks, setTracks] = useState([]);
+  const { bands, albums, tracks, setTracks } = props;
   const [sort, setSort] = useState("alpha");
-  //   const [trackFilter, setTrackFilter] = useState("");
+
   //TODO: 'clear selection' button
+
+  useEffect(() => {
+    getTrackInfo(albums, setTracks);
+  }, [albums]);
+
+  if (bands.length > 1) return null;
 
   const getTrackInfo = (albums, setTracks) => {
     const tracks = [];
@@ -91,13 +96,8 @@ const TrackList = (props) => {
     setTracks([...tracks]);
   };
 
-  useEffect(() => {
-    getTrackInfo(albums, setTracks);
-  }, [albums]);
-
   if (albums.length === 0) return null;
 
-  //   tracks.sort(getSortFn(sort));
   return (
     <div id="track-list-column">
       <div className="sort-buttons">

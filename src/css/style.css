@@ -45,6 +45,10 @@ h1 span:nth-of-type(2) {
   font-size: 1.5em;
   line-height: 1.8em;
 }
+.band-options > svg {
+  width: 100%;
+  height: 200px;
+}
 .band-option > span {
   background-color: #ff7f50bf;
   cursor: pointer;
@@ -72,8 +76,7 @@ h1 span:nth-of-type(2) {
 .sort-buttons button {
   margin: 10px;
 }
-#track-list-container {
-}
+
 #track-list-container > div {
   margin-bottom: 12px;
   margin-right: 12px;
