@@ -6,7 +6,7 @@ import AlbumList from "./AlbumList.js";
 const SearchParams = () => {
   const [bandInput, setBandInput] = useState("");
   const [bands, setBands] = useState([]);
-  const [bandName, setBandName] = useState("");
+  // const [bandName, setBandName] = useState("");
   const [bandId, setBandId] = useState("");
   const [albums, setAlbums] = useState([]);
   const [tracks, setTracks] = useState([]);
@@ -14,7 +14,7 @@ const SearchParams = () => {
   // TODO: add year constraints option
   // TODO: show just live albums, option
   // TODO: reset button
-  // TODO: d3 layout, transitions
+  // TODO: animate transitions
 
   async function getBands() {
     const bandInfoRequest = await fetch(`/api/bands/${bandInput}`, {
@@ -26,7 +26,7 @@ const SearchParams = () => {
 
   useEffect(() => {
     if (!bandId) return null;
-    getAlbumInfo();
+    // getAlbumInfo();
   }, [bandId]);
 
   async function getAlbumInfo() {
@@ -48,15 +48,12 @@ const SearchParams = () => {
           }}
         >
           <label htmlFor="band-input">
-            Find the best setlist for you
-            <br />
-            Search for a band to get started
-            <br />
             <input
               id="band-input"
               list="band-list"
               value={bandInput}
               onChange={(e) => setBandInput(e.target.value)}
+              placeholder="name a band"
             ></input>
           </label>
         </form>
@@ -64,7 +61,7 @@ const SearchParams = () => {
       <BandDataList
         bands={bands}
         setBands={setBands}
-        setBandName={setBandName}
+        // setBandName={setBandName}
         setBandId={setBandId}
       />
       <div id="column-container">

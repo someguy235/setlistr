@@ -4,15 +4,13 @@ import SearchParams from "./SearchParams";
 
 const App = () => {
   return (
-    <div>
+    <main>
       <h1>
-        <div>
-          <span>Set</span>
-          <span>Listr</span>
-        </div>
+        <span>Set</span>
+        <span>Listr</span>
       </h1>
       <SearchParams />
-    </div>
+    </main>
   );
 };
 

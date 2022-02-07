@@ -8,14 +8,33 @@ h1 {
   font-size: 4em;
   text-align: center;
 }
-h1 div {
-  display: inline-block;
+h1 span {
+  padding: 0.1em;
 }
 h1 span:first-of-type {
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
   font-weight: 400;
+  color: white;
+  background: rgba(100, 149, 237, 1);
+  background: linear-gradient(
+    90deg,
+    rgba(100, 149, 237, 1) 0%,
+    rgba(100, 149, 237, 1) 80%,
+    rgba(208, 52, 208, 0.5) 100%
+  );
 }
 h1 span:nth-of-type(2) {
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
   font-weight: 800;
+  background: rgba(255, 127, 80, 1);
+  background: linear-gradient(
+    90deg,
+    rgba(208, 52, 208, 0.5) 0%,
+    rgba(255, 127, 80, 1) 20%,
+    rgba(255, 127, 80, 1) 100%
+  );
 }
 
 #band-form-container {
@@ -24,11 +43,15 @@ h1 span:nth-of-type(2) {
 #band-form-container form {
   display: inline-block;
   font-size: 1.2em;
+  border: 1px solid gray;
+  background: rgba(50, 50, 50, 0.2);
+  padding: 0.5em;
+  border-radius: 3px;
 }
 #band-input {
-  font-size: 1.2em;
+  font-size: 1.2rem;
   height: 30px;
-  width: 300px;
+  /* width: 300px; */
   margin: 5px;
 }
 
@@ -36,30 +59,58 @@ h1 span:nth-of-type(2) {
   text-align: center;
   margin-top: 1em;
 }
-#band-options > div {
-  width: 50%;
-  display: inline-block;
-}
+/* #band-options > div { */
+/* width: 50%; */
+/* display: inline-block; */
+/* background-color: blue; */
+/* } */
+/* @media (max-width: 1000px) { */
+/* #band-options > div { */
+/* width: 100%; */
+/* } */
+/* } */
 .band-option {
   margin-bottom: 14px;
   font-size: 1.5em;
   line-height: 1.8em;
+  position: absolute;
 }
-.band-options > svg {
-  width: 100%;
-  height: 200px;
+.band-option-enter {
+  top: 0;
+}
+.band-option-enter-active {
+  top: 100px;
+}
+.band-option-enter span {
+  opacity: 0.01;
+}
+.band-option-enter-active span {
+  opacity: 1;
+  transition: all 500ms ease-in;
+}
+.band-option-exit {
+  top: 100px;
+}
+.band-option-exit-active {
+  top: 0;
+}
+.band-option-exit span {
+  opacity: 1;
+}
+.band-option-exit-active span {
+  opacity: 0.01;
+  transition: all 300ms ease-in;
 }
 .band-option > span {
   background-color: #ff7f50bf;
   cursor: pointer;
   display: inline-block;
-  width: 40%;
+  width: 300px;
   padding: 5px;
   border-radius: 5px;
-  /* box-shadow: 12px 12px 2px 1px rgba(0, 0, 255, .2); */
-  /* box-shadow: 8px 8px 2px 1px teal; */
   box-shadow: 8px 8px 2px 1px #00808080;
 }
+
 #column-container {
   display: grid;
   grid-template-columns: 35% 65%;

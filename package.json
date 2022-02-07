@@ -32,6 +32,7 @@
     "node-fetch": "^2.6.5",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-transition-group": "^4.4.2",
     "underscore": "^1.13.1"
   },
   "browserslist": [
