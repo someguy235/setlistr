@@ -58,28 +58,13 @@ h1 span:nth-of-type(2) {
 #band-options {
   text-align: center;
   margin-top: 1em;
+  position: relative;
 }
-/* #band-options > div { */
-/* width: 50%; */
-/* display: inline-block; */
-/* background-color: blue; */
-/* } */
-/* @media (max-width: 1000px) { */
-/* #band-options > div { */
-/* width: 100%; */
-/* } */
-/* } */
 .band-option {
   margin-bottom: 14px;
   font-size: 1.5em;
   line-height: 1.8em;
   position: absolute;
-}
-.band-option-enter {
-  top: 0;
-}
-.band-option-enter-active {
-  top: 100px;
 }
 .band-option-enter span {
   opacity: 0.01;
@@ -88,18 +73,12 @@ h1 span:nth-of-type(2) {
   opacity: 1;
   transition: all 500ms ease-in;
 }
-.band-option-exit {
-  top: 100px;
-}
-.band-option-exit-active {
-  top: 0;
-}
 .band-option-exit span {
   opacity: 1;
 }
 .band-option-exit-active span {
   opacity: 0.01;
-  transition: all 300ms ease-in;
+  transition: all 500ms ease-in;
 }
 .band-option > span {
   background-color: #ff7f50bf;
