@@ -26,7 +26,7 @@ const SearchParams = () => {
 
   useEffect(() => {
     if (!bandId) return null;
-    // getAlbumInfo();
+    getAlbumInfo();
   }, [bandId]);
 
   async function getAlbumInfo() {
@@ -34,7 +34,7 @@ const SearchParams = () => {
       method: "GET",
     });
     const res = await albumInfoRequest.json();
-    console.log(res.albums);
+    // console.log(res.albums);
     setAlbums(res.albums);
   }
 

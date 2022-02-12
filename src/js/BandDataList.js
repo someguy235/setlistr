@@ -1,30 +1,21 @@
-import { useEffect, useRef, useState } from "react";
-import { TransitionGroup, CSSTransition } from "react-transition-group"; // ES6
+import { useEffect, useRef } from "react";
 import * as d3 from "d3";
 
 const BandDataList = (props) => {
   const { bands, setBands, setBandId } = props;
   const svgRef = useRef(null);
-  const dimensions = {
-    width: 600,
-    height: 300,
-    margin: { top: 30, right: 30, bottom: 30, left: 60 },
-  };
-  const { width, height, margin } = dimensions;
-  const svgWidth = width + margin.left + margin.right;
-  const svgHeight = height + margin.top + margin.bottom;
-  // const { setBandId } = props;
 
   // const [bandName, setBandName] = useState("");
 
   useEffect(() => {
-    console.log("useEffect");
-    console.log(bands);
+    // console.log("useEffect");
+    // console.log(bands);
 
     if (bands.length === 0) return;
 
     const svgEl = d3.select(svgRef.current);
 
+    // TODO: handle the case where the original search only has one result
     if (bands.length === 1) {
       svgEl
         .selectAll(".band-option")
@@ -45,7 +36,6 @@ const BandDataList = (props) => {
       .append("div")
       .attr("class", "band-option")
       .style("top", (d, i) => 70 * i + "px")
-      .style("left", 300 + "px")
       .on("click", (e) => handleChange(e))
       .append("span")
       .attr("data-bandname", (d) => d.name)
@@ -54,7 +44,7 @@ const BandDataList = (props) => {
   }, [bands]);
 
   const handleChange = (e) => {
-    console.log(e);
+    // console.log(e);
     const bandname = e.target.dataset.bandname;
     const bandid = e.target.dataset.bandid;
 
@@ -66,8 +56,9 @@ const BandDataList = (props) => {
   if (bands.length === 0) return null;
 
   return (
-    // <svg id="band-options" ref={svgRef} width={svgWidth} height={svgHeight} />
-    <div id="band-options" ref={svgRef} width={svgWidth} height={svgHeight} />
+    <div id="band-options-container">
+      <div id="band-options" ref={svgRef} />
+    </div>
     // <div id="band-options" style={{ height: bands.length * 20 }}>
     //   <TransitionGroup
     //     transitionName="band-option"

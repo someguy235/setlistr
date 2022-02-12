@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { forwardRef, useState } from "react";
+import FlipMove from "react-flip-move";
 
 const calculateAlbumScores = (albums, tracks) => {
   let scores = {};
@@ -6,7 +7,6 @@ const calculateAlbumScores = (albums, tracks) => {
     if (track.selected) {
       albums.forEach((album) => {
         if (album.tracks.includes(track.name)) {
-          console.log("found");
           scores[album.id] = scores[album.id] || 0;
           scores[album.id]++;
         }
@@ -22,7 +22,14 @@ const calculateAlbumScores = (albums, tracks) => {
   //   return scores;
 };
 
-const AlbumEntry = (props) => {
+const FunctionalAlbumEntry = forwardRef((props, ref) => (
+  <div ref={ref}>
+    <AlbumEntry props={props} />
+  </div>
+));
+FunctionalAlbumEntry.displayName = "FunctionalAlbumEntry";
+
+const AlbumEntry = ({ props }) => {
   const { album, selectedTracks, showTracks } = props;
   const tracks = showTracks
     ? album.tracks.map((track, i) => {
@@ -69,6 +76,8 @@ const AlbumList = (props) => {
   calculateAlbumScores(albums, tracks);
   const selectedTracks = getSelectedTracks(tracks);
 
+  const displayAlbums = albums.sort(sortFn);
+
   return (
     <div id="album-list-column">
       <div className="sort-buttons">
@@ -81,16 +90,24 @@ const AlbumList = (props) => {
         </button>
       </div>
       <div className="albums-container">
-        {albums.sort(sortFn).map((album) => {
-          return (
-            <AlbumEntry
-              key={album.id}
-              album={album}
-              selectedTracks={selectedTracks}
-              showTracks={showTracks}
-            />
-          );
-        })}
+        <FlipMove
+          duration={1000}
+          staggerDelayBy={30}
+          // enterAnimation={"accordionVertical"}
+          // leaveAnimation={"accordionVertical"}
+          // typeName="null"
+        >
+          {displayAlbums.map((album) => {
+            return (
+              <FunctionalAlbumEntry
+                key={album.id}
+                album={album}
+                selectedTracks={selectedTracks}
+                showTracks={showTracks}
+              />
+            );
+          })}
+        </FlipMove>
       </div>
     </div>
   );
