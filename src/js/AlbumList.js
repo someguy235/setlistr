@@ -23,7 +23,7 @@ const calculateAlbumScores = (albums, tracks) => {
 };
 
 const FunctionalAlbumEntry = forwardRef((props, ref) => (
-  <div ref={ref}>
+  <div className="album-entry-container" ref={ref}>
     <AlbumEntry props={props} />
   </div>
 ));
@@ -90,13 +90,7 @@ const AlbumList = (props) => {
         </button>
       </div>
       <div className="albums-container">
-        <FlipMove
-          duration={1000}
-          staggerDelayBy={30}
-          // enterAnimation={"accordionVertical"}
-          // leaveAnimation={"accordionVertical"}
-          // typeName="null"
-        >
+        <FlipMove duration={500} staggerDelayBy={30} typeName="div">
           {displayAlbums.map((album) => {
             return (
               <FunctionalAlbumEntry
