@@ -6,7 +6,6 @@ import AlbumList from "./AlbumList.js";
 const SearchParams = () => {
   const [bandInput, setBandInput] = useState("");
   const [bands, setBands] = useState([]);
-  // const [bandName, setBandName] = useState("");
   const [bandId, setBandId] = useState("");
   const [albums, setAlbums] = useState([]);
   const [tracks, setTracks] = useState([]);
@@ -14,7 +13,8 @@ const SearchParams = () => {
   // TODO: add year constraints option
   // TODO: show just live albums, option
   // TODO: reset button
-  // TODO: animate transitions
+  // TODO: links to spotify
+  // TODO: style sort buttons
 
   async function getBands() {
     const bandInfoRequest = await fetch(`/api/bands/${bandInput}`, {
@@ -34,7 +34,6 @@ const SearchParams = () => {
       method: "GET",
     });
     const res = await albumInfoRequest.json();
-    // console.log(res.albums);
     setAlbums(res.albums);
   }
 
@@ -58,12 +57,7 @@ const SearchParams = () => {
           </label>
         </form>
       </div>
-      <BandDataList
-        bands={bands}
-        setBands={setBands}
-        // setBandName={setBandName}
-        setBandId={setBandId}
-      />
+      <BandDataList bands={bands} setBands={setBands} setBandId={setBandId} />
       <div id="column-container">
         <TrackList
           bands={bands}

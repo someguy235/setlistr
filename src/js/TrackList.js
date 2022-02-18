@@ -1,6 +1,14 @@
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
+import FlipMove from "react-flip-move";
 
-const TrackEntry = (props) => {
+const FunctionalTrackEntry = forwardRef((props, ref) => (
+  <div className="track-name-container" ref={ref}>
+    <TrackEntry props={props} />
+  </div>
+));
+FunctionalTrackEntry.displayName = "FunctionalTrackEntry";
+
+const TrackEntry = ({ props }) => {
   const { track, toggleTrack } = props;
   return (
     <div>
@@ -9,7 +17,7 @@ const TrackEntry = (props) => {
         tabIndex="0"
         onKeyPress={() => {}}
         onClick={() => toggleTrack(track.name)}
-        className={track.selected ? "selected" : ""}
+        className={"track-button" + (track.selected ? " selected" : "")}
       >
         {`${track.name} [${track.count}]`}
       </div>
@@ -123,15 +131,17 @@ const TrackList = (props) => {
         </button>
       </div>
       <div id="track-list-container">
-        {tracks.sort(getSortFn(sort)).map((track) => {
-          return (
-            <TrackEntry
-              key={track.name}
-              track={track}
-              toggleTrack={toggleTrack}
-            />
-          );
-        })}
+        <FlipMove duration={500} staggerDurationBy={10} typeName="div">
+          {tracks.sort(getSortFn(sort)).map((track) => {
+            return (
+              <FunctionalTrackEntry
+                key={track.name}
+                track={track}
+                toggleTrack={toggleTrack}
+              />
+            );
+          })}
+        </FlipMove>
       </div>
     </div>
   );

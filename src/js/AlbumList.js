@@ -2,7 +2,9 @@ import { forwardRef, useState } from "react";
 import FlipMove from "react-flip-move";
 
 const calculateAlbumScores = (albums, tracks) => {
-  let scores = {};
+  const scores = {};
+  const scoredAlbums = [];
+
   tracks.forEach((track) => {
     if (track.selected) {
       albums.forEach((album) => {
@@ -15,11 +17,12 @@ const calculateAlbumScores = (albums, tracks) => {
   });
 
   albums.forEach((album) => {
-    album.score = scores[album.id] || 0;
+    scoredAlbums.push({ ...album, score: scores[album.id] || 0 });
   });
 
-  // TODO: should return a new object
-  //   return scores;
+  return scoredAlbums.sort((a, b) => {
+    return a.score < b.score ? 1 : -1;
+  });
 };
 
 const FunctionalAlbumEntry = forwardRef((props, ref) => (
@@ -57,10 +60,6 @@ const AlbumEntry = ({ props }) => {
   );
 };
 
-const sortFn = (a, b) => {
-  return a.score < b.score ? 1 : -1;
-};
-
 const getSelectedTracks = (tracks) => {
   return tracks.map((track) => {
     return track.selected ? track.name : null;
@@ -73,10 +72,8 @@ const AlbumList = (props) => {
 
   if (albums.length === 0 || bands.length > 1) return null;
 
-  calculateAlbumScores(albums, tracks);
+  const displayAlbums = calculateAlbumScores(albums, tracks);
   const selectedTracks = getSelectedTracks(tracks);
-
-  const displayAlbums = albums.sort(sortFn);
 
   return (
     <div id="album-list-column">
@@ -89,8 +86,8 @@ const AlbumList = (props) => {
           Show Tracks
         </button>
       </div>
-      <div className="albums-container">
-        <FlipMove duration={500} staggerDelayBy={30} typeName="div">
+      <div id="albums-container">
+        <FlipMove duration={500} staggerDurationBy={30} typeName="div">
           {displayAlbums.map((album) => {
             return (
               <FunctionalAlbumEntry
