@@ -12,15 +12,12 @@ const TrackEntry = ({ props }) => {
   const { track, toggleTrack } = props;
   return (
     <div>
-      <div
-        role="button"
-        tabIndex="0"
-        onKeyPress={() => {}}
-        onClick={() => toggleTrack(track.name)}
+      <button
         className={"track-button" + (track.selected ? " selected" : "")}
+        onClick={() => toggleTrack(track.name)}
       >
         {`${track.name} [${track.count}]`}
-      </div>
+      </button>
     </div>
   );
 };
@@ -28,8 +25,6 @@ const TrackEntry = ({ props }) => {
 const TrackList = (props) => {
   const { bands, albums, tracks, setTracks } = props;
   const [sort, setSort] = useState("alpha");
-
-  //TODO: 'clear selection' button
 
   useEffect(() => {
     getTrackInfo(albums, setTracks);
@@ -98,6 +93,13 @@ const TrackList = (props) => {
     setSort(t);
   };
 
+  const resetTracks = () => {
+    const resetTracks = tracks.map((track) => {
+      return { ...track, selected: false };
+    });
+    setTracks(resetTracks);
+  };
+
   const toggleTrack = (trackName) => {
     let foundIdx = tracks.findIndex((track) => track.name === trackName);
     tracks[foundIdx].selected = !tracks[foundIdx].selected;
@@ -106,29 +108,28 @@ const TrackList = (props) => {
 
   if (albums.length === 0) return null;
 
+  const alphaButtonText =
+    "Alpha " +
+    (sort === "alpha"
+      ? String.fromCharCode(8593)
+      : sort === "alpha-rev"
+      ? String.fromCharCode(8595)
+      : "");
+
+  const countButtonText =
+    "Count " +
+    (sort === "count"
+      ? String.fromCharCode(8593)
+      : sort === "counts-rev"
+      ? String.fromCharCode(8595)
+      : "");
+
   return (
     <div id="track-list-column">
       <div className="sort-buttons">
-        <button onClick={() => updateSort("alpha")}>
-          Alpha{" "}
-          {sort === "alpha" ? (
-            <span>&uarr;</span>
-          ) : sort === "alpha-rev" ? (
-            <span>&darr;</span>
-          ) : (
-            " "
-          )}
-        </button>
-        <button onClick={() => updateSort("count")}>
-          Count{" "}
-          {sort === "count" ? (
-            <span>&uarr;</span>
-          ) : sort === "count-rev" ? (
-            <span>&darr;</span>
-          ) : (
-            " "
-          )}
-        </button>
+        <button onClick={() => updateSort("alpha")}>{alphaButtonText}</button>
+        <button onClick={() => updateSort("count")}>{countButtonText}</button>
+        <button onClick={() => resetTracks()}>Reset</button>
       </div>
       <div id="track-list-container">
         <FlipMove duration={500} staggerDurationBy={10} typeName="div">

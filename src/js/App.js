@@ -2,6 +2,9 @@ import { StrictMode } from "react";
 import { render } from "react-dom";
 import SearchParams from "./SearchParams";
 
+// TODO: semantic html elements
+// TODO: catch errors. phish?
+
 const App = () => {
   return (
     <main>

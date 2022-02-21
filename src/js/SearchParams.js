@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import BandDataList from "./BandDataList.js";
 import TrackList from "./TrackList.js";
 import AlbumList from "./AlbumList.js";
+import LoadingSpinner from "./LoadingSpinner.js";
 
 const SearchParams = () => {
   const [bandInput, setBandInput] = useState("");
@@ -9,12 +10,7 @@ const SearchParams = () => {
   const [bandId, setBandId] = useState("");
   const [albums, setAlbums] = useState([]);
   const [tracks, setTracks] = useState([]);
-
-  // TODO: add year constraints option
-  // TODO: show just live albums, option
-  // TODO: reset button
-  // TODO: links to spotify
-  // TODO: style sort buttons
+  const [albumsLoading, setAlbumsLoading] = useState(false);
 
   async function getBands() {
     const bandInfoRequest = await fetch(`/api/bands/${bandInput}`, {
@@ -30,11 +26,14 @@ const SearchParams = () => {
   }, [bandId]);
 
   async function getAlbumInfo() {
+    setAlbumsLoading(true);
+    setAlbums([]);
     const albumInfoRequest = await fetch(`/api/albums/${bandId}`, {
       method: "GET",
     });
     const res = await albumInfoRequest.json();
     setAlbums(res.albums);
+    setAlbumsLoading(false);
   }
 
   return (
@@ -58,6 +57,7 @@ const SearchParams = () => {
         </form>
       </div>
       <BandDataList bands={bands} setBands={setBands} setBandId={setBandId} />
+      <LoadingSpinner msg={"contacting Spotify..."} loading={albumsLoading} />
       <div id="column-container">
         <TrackList
           bands={bands}

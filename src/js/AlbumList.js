@@ -49,7 +49,13 @@ const AlbumEntry = ({ props }) => {
   return (
     <div className="album-entry">
       <div>
-        <img alt="album cover art" src={album.img} />
+        <a
+          href={"https://open.spotify.com/album/" + album.id}
+          target="_blank"
+          rel="noreferrer"
+        >
+          <img alt="album cover art" src={album.img} />
+        </a>
       </div>
       <div className="track-title">{album.name}</div>
       <div className={"track-score"}>
@@ -83,7 +89,7 @@ const AlbumList = (props) => {
             setShowTracks(!showTracks);
           }}
         >
-          Show Tracks
+          {showTracks ? "Hide Tracks" : "Show Tracks"}
         </button>
       </div>
       <div id="albums-container">

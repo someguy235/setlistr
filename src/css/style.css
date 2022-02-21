@@ -36,7 +36,16 @@ h1 span:nth-of-type(2) {
     rgba(255, 127, 80, 1) 100%
   );
 }
-
+.loading-container {
+  height: 200px;
+  text-align: center;
+}
+.loading-spinner {
+  background-image: url("../img/loading.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 200px;
+}
 #band-form-container {
   text-align: center;
 }
@@ -45,7 +54,7 @@ h1 span:nth-of-type(2) {
   font-size: 1.2em;
   border: 1px solid gray;
   background: rgba(50, 50, 50, 0.2);
-  padding: 0.5em;
+  padding: 6px;
   border-radius: 3px;
 }
 #band-input {
@@ -62,25 +71,35 @@ h1 span:nth-of-type(2) {
 #band-options {
   text-align: center;
   margin-top: 1em;
+  margin-bottom: 2em;
 }
 .band-option {
   margin-bottom: 14px;
   font-size: 1.5em;
   line-height: 1.8em;
 }
-.band-option > span {
+.band-option button {
   background-color: #ff7f50bf;
+  border: 0;
   cursor: pointer;
-  display: inline-block;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: normal;
   width: 300px;
-  padding: 5px;
+  padding: 10px;
   border-radius: 5px;
   box-shadow: 8px 8px 2px 1px #00808080;
+}
+.band-option button:hover {
+  background-color: #ff7f50;
 }
 
 #column-container {
   display: grid;
   grid-template-columns: 35% 65%;
+}
+#track-list-container {
+  padding-top: 10px;
 }
 #track-list-column {
   grid-column: 1;
@@ -89,10 +108,20 @@ h1 span:nth-of-type(2) {
 }
 .sort-buttons {
   text-align: center;
-  /* margin-bottom: 1em; */
 }
 .sort-buttons button {
+  font-family: inherit;
+  font-size: inherit;
   margin: 10px;
+  padding: 8px;
+  background-color: #ff7f50bf;
+  cursor: pointer;
+  border-radius: 5px;
+  box-shadow: 4px 4px 2px 1px #00808080;
+  border: 0;
+}
+.sort-buttons button:hover {
+  background-color: #ff7f50;
 }
 
 .track-name-container {
@@ -101,14 +130,20 @@ h1 span:nth-of-type(2) {
   display: inline-block;
 }
 .track-button {
+  border: 0;
   cursor: pointer;
   display: inline-block;
+  font-family: inherit;
+  font-size: inherit;
   padding: 5px;
-  background-color: cornflowerblue;
+  background-color: #6495ed;
   box-shadow: 4px 4px 2px 1px #80008080;
 }
+.track-button:hover {
+  background-color: #5f9ea0;
+}
 .track-button.selected {
-  background-color: cadetblue;
+  background-color: #5f9ea0;
 }
 .track-title {
   font-weight: 500;
@@ -121,7 +156,7 @@ h1 span:nth-of-type(2) {
   margin-bottom: 5px;
 }
 .track-selected {
-  color: red;
+  color: #ff0000;
 }
 #album-list-column {
   grid-column: 2;

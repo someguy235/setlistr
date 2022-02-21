@@ -11,20 +11,13 @@ FunctionalBandItem.displayName = "FunctionalBandItem";
 const BandItem = ({ props }) => {
   const { band, handleChange } = props;
   return (
-    <span
+    <button
       data-bandname={band.name}
       data-bandid={band.id}
-      onClick={(e) => {
-        handleChange(e);
-      }}
-      onKeyPress={(e) => {
-        handleChange(e);
-      }}
-      role="button"
-      tabIndex="0"
+      onClick={(e) => handleChange(e)}
     >
       {band.name}
-    </span>
+    </button>
   );
 };
 

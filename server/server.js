@@ -129,15 +129,12 @@ const cleanupAlbumInfo = (albumInfo) => {
 };
 
 const getAlbumInfo = async (album) => {
-  // console.log(album.tracks);
   console.log(album.name);
 
   const artist = album.artists[0].name;
   const name = album.name;
   const id = album.id;
-  // const href = album.href;
   const release = album.release_date;
-  // const tracks = album.tracks;
   let imgurl;
   for (const img of album.images) {
     if (img.height === 300) imgurl = img.url;
@@ -150,7 +147,6 @@ const getAlbumInfo = async (album) => {
     artist: artist,
     name: name,
     id: id,
-    // href: href,
     release: release,
     img: img,
     tracks: tracks,
