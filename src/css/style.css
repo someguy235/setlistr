@@ -1,3 +1,6 @@
+/*          */
+/* Elements */
+/*          */
 body {
   background-color: #a49db6;
   background-image: url("../img/asfalt-light.png");
@@ -36,6 +39,8 @@ h1 span:nth-of-type(2) {
     rgba(255, 127, 80, 1) 100%
   );
 }
+
+/* Loading Spinner */
 .loading-container {
   height: 200px;
   text-align: center;
@@ -46,6 +51,10 @@ h1 span:nth-of-type(2) {
   background-position: center;
   height: 200px;
 }
+
+/*                     */
+/* Band Selection Area */
+/*                     */
 #band-form-container {
   text-align: center;
 }
@@ -62,6 +71,8 @@ h1 span:nth-of-type(2) {
   height: 30px;
   margin: 5px;
 }
+
+/* Band Items */
 #band-options-container {
   display: flex;
   flex-direction: column;
@@ -73,10 +84,14 @@ h1 span:nth-of-type(2) {
   margin-top: 1em;
   margin-bottom: 2em;
 }
+#band-options ul {
+  padding: 0;
+}
 .band-option {
   margin-bottom: 14px;
   font-size: 1.5em;
   line-height: 1.8em;
+  list-style: none;
 }
 .band-option button {
   background-color: #ff7f50bf;
@@ -94,20 +109,37 @@ h1 span:nth-of-type(2) {
   background-color: #ff7f50;
 }
 
+/* Content Columns */
 #column-container {
   display: grid;
   grid-template-columns: 35% 65%;
 }
+
+/*                      */
+/* Track Selection Area */
+/*                      */
 #track-list-container {
   padding-top: 10px;
+}
+#track-list-container ul {
+  padding: 0;
+  margin: 0;
 }
 #track-list-column {
   grid-column: 1;
   padding-left: 2em;
   text-align: center;
 }
+
+/* Track Sort Buttons */
 .sort-buttons {
   text-align: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.sort-buttons li {
+  display: inline-block;
 }
 .sort-buttons button {
   font-family: inherit;
@@ -124,6 +156,7 @@ h1 span:nth-of-type(2) {
   background-color: #ff7f50;
 }
 
+/* Track Items */
 .track-name-container {
   margin-bottom: 12px;
   margin-right: 12px;
@@ -158,14 +191,23 @@ h1 span:nth-of-type(2) {
 .track-selected {
   color: #ff0000;
 }
+
+/*                      */
+/* Album Selection Area */
+/*                      */
 #album-list-column {
   grid-column: 2;
 }
-
+#albums-container ol {
+  padding: 0;
+  margin: 0;
+}
 .album-entry-container {
   display: inline-block;
   vertical-align: top;
 }
+
+/* Album Items */
 .album-entry {
   display: inline-block;
   text-align: center;

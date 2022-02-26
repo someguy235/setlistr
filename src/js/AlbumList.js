@@ -25,27 +25,28 @@ const calculateAlbumScores = (albums, tracks) => {
   });
 };
 
-const FunctionalAlbumEntry = forwardRef((props, ref) => (
-  <div className="album-entry-container" ref={ref}>
-    <AlbumEntry props={props} />
-  </div>
+const FunctionalAlbumItem = forwardRef((props, ref) => (
+  <li className="album-entry-container" ref={ref}>
+    <AlbumItem props={props} />
+  </li>
 ));
-FunctionalAlbumEntry.displayName = "FunctionalAlbumEntry";
+FunctionalAlbumItem.displayName = "FunctionalAlbumItem";
 
-const AlbumEntry = ({ props }) => {
+const AlbumItem = ({ props }) => {
   const { album, selectedTracks, showTracks } = props;
   const tracks = showTracks
     ? album.tracks.map((track, i) => {
         return (
-          <div
+          <li
             className={selectedTracks.includes(track) ? "track-selected" : ""}
             key={i}
           >
-            {i + 1 + ". " + track}
-          </div>
+            {track}
+          </li>
         );
       })
     : null;
+
   return (
     <div className="album-entry">
       <div>
@@ -61,7 +62,7 @@ const AlbumEntry = ({ props }) => {
       <div className={"track-score"}>
         {album.score}/{album.tracks.length}
       </div>
-      <div>{tracks}</div>
+      <ol>{tracks}</ol>
     </div>
   );
 };
@@ -82,21 +83,23 @@ const AlbumList = (props) => {
   const selectedTracks = getSelectedTracks(tracks);
 
   return (
-    <div id="album-list-column">
-      <div className="sort-buttons">
-        <button
-          onClick={() => {
-            setShowTracks(!showTracks);
-          }}
-        >
-          {showTracks ? "Hide Tracks" : "Show Tracks"}
-        </button>
-      </div>
+    <section id="album-list-column">
+      <menu className="sort-buttons">
+        <li>
+          <button
+            onClick={() => {
+              setShowTracks(!showTracks);
+            }}
+          >
+            {showTracks ? "Hide Tracks" : "Show Tracks"}
+          </button>
+        </li>
+      </menu>
       <div id="albums-container">
-        <FlipMove duration={500} staggerDurationBy={30} typeName="div">
+        <FlipMove duration={500} staggerDurationBy={30} typeName="ol">
           {displayAlbums.map((album) => {
             return (
-              <FunctionalAlbumEntry
+              <FunctionalAlbumItem
                 key={album.id}
                 album={album}
                 selectedTracks={selectedTracks}
@@ -106,7 +109,7 @@ const AlbumList = (props) => {
           })}
         </FlipMove>
       </div>
-    </div>
+    </section>
   );
 };
 

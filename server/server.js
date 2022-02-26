@@ -1,8 +1,8 @@
 const express = require("express");
 const fetch = require("node-fetch");
-var _ = require("underscore");
+const _ = require("underscore");
 const secret = require("./secret.json");
-var MongoClient = require("mongodb").MongoClient;
+const MongoClient = require("mongodb").MongoClient;
 
 const PORT = process.env.PORT || 3001;
 
@@ -56,14 +56,6 @@ async function getBearerToken() {
     return bearerToken;
   }
 }
-
-// const cleanupBandData = (bandId) => {
-// console.log(bandId);
-// };
-
-// app.get("/api/search/:search", (req, res) => {
-//   res.json({ message: "Hello from the API" });
-// });
 
 app.get("/api/bands/:search", async (req, res) => {
   const token = await getBearerToken();
@@ -123,11 +115,6 @@ const getImage = async (url) => {
   return st;
 };
 
-const cleanupAlbumInfo = (albumInfo) => {
-  // console.log("cleanupAlbumInfo");
-  return albumInfo;
-};
-
 const getAlbumInfo = async (album) => {
   console.log(album.name);
 
@@ -181,7 +168,6 @@ const getAlbumsInfo = async (bandId, collection) => {
   } while (searchUrl);
 
   if (albumInfo.length > 0) {
-    albumInfo = cleanupAlbumInfo(albumInfo);
     collection.insertMany(albumInfo);
   }
 
@@ -196,13 +182,10 @@ app.get("/api/albums/:band", async (req, res) => {
 
       const db = client.db("setListr");
       const collection = db.collection("albums");
-      // collection.drop();
       await collection
         .find({ bandId: req.params.band })
         .toArray(async function (err, result) {
           if (err) throw err;
-          // console.log("db result");
-          // console.log(result);
           if (result.length === 0) {
             const liveResults = await getAlbumsInfo(
               req.params.band,
@@ -210,15 +193,12 @@ app.get("/api/albums/:band", async (req, res) => {
             );
             res.json({ albums: liveResults });
           } else {
-            const albumInfo = cleanupAlbumInfo(result);
-            res.json({ albums: albumInfo });
+            res.json({ albums: result });
           }
         });
     }
   );
 });
-
-// app.get("/api/tracks/", (req, res) => {});
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);

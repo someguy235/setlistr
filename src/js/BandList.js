@@ -2,9 +2,9 @@ import { forwardRef } from "react";
 import FlipMove from "react-flip-move";
 
 const FunctionalBandItem = forwardRef((props, ref) => (
-  <div className="band-option" key={props.band.id} ref={ref}>
+  <li className="band-option" key={props.band.id} ref={ref}>
     <BandItem props={props} />
-  </div>
+  </li>
 ));
 FunctionalBandItem.displayName = "FunctionalBandItem";
 
@@ -21,7 +21,7 @@ const BandItem = ({ props }) => {
   );
 };
 
-const BandDataList = (props) => {
+const BandList = (props) => {
   const { bands, setBands, setBandId } = props;
 
   const handleChange = (e) => {
@@ -35,8 +35,8 @@ const BandDataList = (props) => {
   if (bands.length === 0) return null;
 
   return (
-    <div id="band-options">
-      <FlipMove duration={500} staggerDurationBy={10} typeName="div">
+    <section id="band-options">
+      <FlipMove duration={500} staggerDurationBy={10} typeName="ul">
         {bands.map((band) => {
           return (
             <FunctionalBandItem
@@ -47,8 +47,8 @@ const BandDataList = (props) => {
           );
         })}
       </FlipMove>
-    </div>
+    </section>
   );
 };
 
-export default BandDataList;
+export default BandList;
