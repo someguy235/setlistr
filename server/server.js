@@ -118,7 +118,7 @@ const getImage = async (url) => {
 };
 
 const getAlbumInfo = async (album) => {
-  console.log(album.name);
+  // console.log(album.name);
 
   const artist = album.artists[0].name;
   const name = album.name;
@@ -191,16 +191,12 @@ app.get("/api/albums/:band", async (req, res) => {
       .find({ bandId: req.params.band })
       .toArray(async function (err, result) {
         if (err) throw err;
-        // if (result.length === 0) {
         const liveResults = await getAlbumsInfo(
           req.params.band,
           collection,
           result
         );
         res.json({ albums: liveResults });
-        // } else {
-        // res.json({ albums: result });
-        // }
       });
   });
 });
