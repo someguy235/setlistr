@@ -11,11 +11,11 @@ const app = express();
 let bearerToken, expiresDate;
 
 const API_BASE = "https://api.spotify.com/v1";
-
 const AUTH_BASE = "https://accounts.spotify.com/api/token";
 const CLIENT_ID = "fd89d09a42cf4a9fb0a69ec19e3432ae";
 const SECRET_ID = secret.key;
 const ENCODED_ID = Buffer.from(CLIENT_ID + ":" + SECRET_ID).toString("base64");
+const DB_CONN = "mongodb://localhost:27017/setlistr";
 
 function setNewExpires(expires) {
   const currentDateObj = new Date();
@@ -59,8 +59,7 @@ async function getBearerToken() {
 
 app.get("/api/bands/:search", async (req, res) => {
   const token = await getBearerToken();
-  const searchUrl =
-    API_BASE + `/search?q=${req.params.search}&type=artist&limit=10`;
+  const searchUrl = `${API_BASE}/search?q=${req.params.search}&type=artist&limit=10`;
   const bandInfoRequest = await fetch(searchUrl, {
     method: "GET",
     headers: {
@@ -77,13 +76,16 @@ app.get("/api/bands/:search", async (req, res) => {
 
 const getTracks = async (albumId) => {
   const token = await getBearerToken();
-  const searchUrl = `https://api.spotify.com/v1/albums/${albumId}`;
+  const searchUrl = `${API_BASE}/albums/${albumId}`;
   const albumInfo = await fetch(searchUrl, {
     method: "GET",
     headers: {
       Authorization: "Bearer " + token,
     },
+  }).catch((err) => {
+    console.log(err);
   });
+
   const albumJson = await albumInfo.json(); //.tracks; //.items;
   const albumTracks = albumJson.tracks.items;
 
@@ -142,12 +144,16 @@ const getAlbumInfo = async (album) => {
   return albumObj;
 };
 
-const getAlbumsInfo = async (bandId, collection) => {
+const getAlbumsInfo = async (bandId, collection, result) => {
+  const cachedAlbumNames = result.map((album) => {
+    return album.name;
+  });
+  const allAlbumInfo = [...result];
+  const newAlbumInfo = [];
+
   let albumRes;
-  let albumInfo = [];
   const token = await getBearerToken();
-  let found = [];
-  let searchUrl = API_BASE + `/artists/${bandId}/albums?include_groups=album`;
+  let searchUrl = `${API_BASE}/artists/${bandId}/albums?include_groups=album`;
   do {
     const albumInfoRequest = await fetch(searchUrl, {
       method: "GET",
@@ -157,47 +163,46 @@ const getAlbumsInfo = async (bandId, collection) => {
     });
     albumRes = await albumInfoRequest.json();
     for (const item of albumRes.items) {
-      if (!found.includes(item.name)) {
+      if (!cachedAlbumNames.includes(item.name)) {
         const info = await getAlbumInfo(item);
         info["bandId"] = bandId;
-        albumInfo.push(info);
-        found.push(item.name);
+        newAlbumInfo.push(info);
+        allAlbumInfo.push(info);
+        cachedAlbumNames.push(item.name);
       }
     }
     searchUrl = albumRes.next;
   } while (searchUrl);
 
-  if (albumInfo.length > 0) {
-    collection.insertMany(albumInfo);
+  if (newAlbumInfo.length > 0) {
+    collection.insertMany(newAlbumInfo);
   }
 
-  return albumInfo;
+  return allAlbumInfo;
 };
 
 app.get("/api/albums/:band", async (req, res) => {
-  MongoClient.connect(
-    "mongodb://localhost:27017/setlistr",
-    async function (err, client) {
-      if (err) throw err;
+  MongoClient.connect(DB_CONN, async function (err, client) {
+    if (err) throw err;
 
-      const db = client.db("setListr");
-      const collection = db.collection("albums");
-      await collection
-        .find({ bandId: req.params.band })
-        .toArray(async function (err, result) {
-          if (err) throw err;
-          if (result.length === 0) {
-            const liveResults = await getAlbumsInfo(
-              req.params.band,
-              collection
-            );
-            res.json({ albums: liveResults });
-          } else {
-            res.json({ albums: result });
-          }
-        });
-    }
-  );
+    const db = client.db("setListr");
+    const collection = db.collection("albums");
+    await collection
+      .find({ bandId: req.params.band })
+      .toArray(async function (err, result) {
+        if (err) throw err;
+        // if (result.length === 0) {
+        const liveResults = await getAlbumsInfo(
+          req.params.band,
+          collection,
+          result
+        );
+        res.json({ albums: liveResults });
+        // } else {
+        // res.json({ albums: result });
+        // }
+      });
+  });
 });
 
 app.listen(PORT, () => {
