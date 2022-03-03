@@ -13,7 +13,7 @@ const SearchParams = () => {
   const [albumsLoading, setAlbumsLoading] = useState(false);
 
   async function getBands() {
-    const bandInfoRequest = await fetch(`/api/bands/${bandInput}`, {
+    const bandInfoRequest = await fetch(`/setlistr/api/bands/${bandInput}`, {
       method: "GET",
     });
     const res = await bandInfoRequest.json();
@@ -23,7 +23,7 @@ const SearchParams = () => {
   const getAlbumInfo = useCallback(async () => {
     setAlbumsLoading(true);
     setAlbums([]);
-    const albumInfoRequest = await fetch(`/api/albums/${bandId}`, {
+    const albumInfoRequest = await fetch(`/setlistr/api/albums/${bandId}`, {
       method: "GET",
     });
     const res = await albumInfoRequest.json();

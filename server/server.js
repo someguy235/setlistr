@@ -57,7 +57,7 @@ async function getBearerToken() {
   }
 }
 
-app.get("/api/bands/:search", async (req, res) => {
+app.get("/setlistr/api/bands/:search", async (req, res) => {
   const token = await getBearerToken();
   const searchUrl = `${API_BASE}/search?q=${req.params.search}&type=artist&limit=10`;
   const bandInfoRequest = await fetch(searchUrl, {
@@ -181,7 +181,7 @@ const getAlbumsInfo = async (bandId, collection, result) => {
   return allAlbumInfo;
 };
 
-app.get("/api/albums/:band", async (req, res) => {
+app.get("/setlistr/api/albums/:band", async (req, res) => {
   MongoClient.connect(DB_CONN, async function (err, client) {
     if (err) throw err;
 
