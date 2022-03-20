@@ -57,23 +57,6 @@ async function getBearerToken() {
   }
 }
 
-app.get("/setlistr/api/bands/:search", async (req, res) => {
-  const token = await getBearerToken();
-  const searchUrl = `${API_BASE}/search?q=${req.params.search}&type=artist&limit=10`;
-  const bandInfoRequest = await fetch(searchUrl, {
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + token,
-    },
-  });
-  const bandInfo = await bandInfoRequest.json();
-  if (bandInfo.artists && bandInfo.artists.items) {
-    res.json({ bands: bandInfo.artists.items });
-  } else {
-    res.json({ bands: [] });
-  }
-});
-
 const getTracks = async (albumId) => {
   const token = await getBearerToken();
   const searchUrl = `${API_BASE}/albums/${albumId}`;
@@ -118,7 +101,7 @@ const getImage = async (url) => {
 };
 
 const getAlbumInfo = async (album) => {
-  // console.log(album.name);
+  console.log(album.name);
 
   const artist = album.artists[0].name;
   const name = album.name;
@@ -148,6 +131,7 @@ const getAlbumsInfo = async (bandId, collection, result) => {
   const cachedAlbumNames = result.map((album) => {
     return album.name;
   });
+  console.log(cachedAlbumNames);
   const allAlbumInfo = [...result];
   const newAlbumInfo = [];
 
@@ -180,6 +164,23 @@ const getAlbumsInfo = async (bandId, collection, result) => {
 
   return allAlbumInfo;
 };
+
+app.get("/setlistr/api/bands/:search", async (req, res) => {
+  const token = await getBearerToken();
+  const searchUrl = `${API_BASE}/search?q=${req.params.search}&type=artist&limit=10`;
+  const bandInfoRequest = await fetch(searchUrl, {
+    method: "GET",
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  });
+  const bandInfo = await bandInfoRequest.json();
+  if (bandInfo?.artists?.items) {
+    res.json({ bands: bandInfo.artists.items });
+  } else {
+    res.json({ bands: [] });
+  }
+});
 
 app.get("/setlistr/api/albums/:band", async (req, res) => {
   MongoClient.connect(DB_CONN, async function (err, client) {
