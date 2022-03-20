@@ -1,43 +1,20 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
-name: Node.js CI
+name: Deploy SetListr
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches: master
 
 jobs:
-  build:
+  deploy:
+    name: Deploy
     runs-on: ubuntu-latest
+
     steps:
-
-    - name: checkout master
-      uses: actions/checkout@v2
-    
-    - name: set up node
-      uses: actions/setup-node@master
-      with:
-        node-version: 16.x    
-
-    - name: install dependencies
-      run: npm ci
-      
-    - name: build react app
-      run: npm run build
-      
-    - name: copy files to server
-      uses: appleboy/scp-actions@v0.0.1
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        port: ${{ secrets.PORT }}
-        key: ${{ secrets.SSHKEY }}
-        passphrase: ${{ secrets.PASSPHRASE }}
-        rm: true
-        source: "./public"
-        target: ${{ secrets.COPY_TO }}
-        
-    - run: pm2 stop setlistr-server; pm2 start ${{ secrets.COPY_TO }}/setlistr-server.js
+      - name: executing remote ssh commands using ssh key
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          port: ${{ secrets.PORT }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSHKEY }}
+          script: deploy-scripts/deploy-setlistr.sh
