@@ -1,9 +1,10 @@
 import { forwardRef, useState } from "react";
-import FlipMove from "react-flip-move";
+import { Band, Track, Album } from "./types";
+// import FlipMove from "react-flip-move";
 
-const calculateAlbumScores = (albums, tracks) => {
-  const scores = {};
-  const scoredAlbums = [];
+const calculateAlbumScores = (albums: Album[], tracks: Track[]) => {
+  const scores: { [key: string]: number } = {};
+  const scoredAlbums: Album[] = [];
 
   tracks.forEach((track) => {
     if (track.selected) {
@@ -25,14 +26,19 @@ const calculateAlbumScores = (albums, tracks) => {
   });
 };
 
-const FunctionalAlbumItem = forwardRef((props, ref) => (
-  <li className="album-entry-container" ref={ref}>
-    <AlbumItem props={props} />
-  </li>
-));
-FunctionalAlbumItem.displayName = "FunctionalAlbumItem";
+// const FunctionalAlbumItem = forwardRef((props, ref) => (
+//   <li className="album-entry-container" ref={ref}>
+//     <AlbumItem props={props} />
+//   </li>
+// ));
+// FunctionalAlbumItem.displayName = "FunctionalAlbumItem";
 
-const AlbumItem = ({ props }) => {
+type AlbumItemProps = {
+  album: Album;
+  selectedTracks: string[];
+  showTracks: boolean;
+};
+const AlbumItem = (props: AlbumItemProps) => {
   const { album, selectedTracks, showTracks } = props;
   const tracks = showTracks
     ? album.tracks.map((track, i) => {
@@ -48,32 +54,43 @@ const AlbumItem = ({ props }) => {
     : null;
 
   return (
-    <div className="album-entry">
-      <div>
-        <a
-          href={"https://open.spotify.com/album/" + album.id}
-          target="_blank"
-          rel="noreferrer"
-        >
-          <img alt="album cover art" src={album.img} />
-        </a>
+    <li className="album-entry-container">
+      <div className="album-entry">
+        <div>
+          <a
+            href={"https://open.spotify.com/album/" + album.id}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <img alt="album cover art" src={album.img} />
+          </a>
+        </div>
+        <div className="track-title">{album.name}</div>
+        <div className={"track-score"}>
+          {album.score}/{album.tracks.length}
+        </div>
+        <ol>{tracks}</ol>
       </div>
-      <div className="track-title">{album.name}</div>
-      <div className={"track-score"}>
-        {album.score}/{album.tracks.length}
-      </div>
-      <ol>{tracks}</ol>
-    </div>
+    </li>
   );
 };
 
-const getSelectedTracks = (tracks) => {
-  return tracks.map((track) => {
-    return track.selected ? track.name : null;
-  });
+const getSelectedTracks = (tracks: Track[]) => {
+  return tracks
+    .filter((track) => {
+      return track.selected && track.name;
+    })
+    .map((track) => {
+      return track.name;
+    });
 };
 
-const AlbumList = (props) => {
+type AlbumListProps = {
+  bands: Band[];
+  albums: Album[];
+  tracks: Track[];
+};
+const AlbumList = (props: AlbumListProps) => {
   const { bands, albums, tracks } = props;
   const [showTracks, setShowTracks] = useState(false);
 
@@ -96,10 +113,11 @@ const AlbumList = (props) => {
         </li>
       </menu>
       <div id="albums-container">
-        <FlipMove duration={500} staggerDurationBy={30} typeName="ol">
+        {/* <FlipMove duration={500} staggerDurationBy={30} typeName="ol"> */}
+        <ol>
           {displayAlbums.map((album) => {
             return (
-              <FunctionalAlbumItem
+              <AlbumItem
                 key={album.id}
                 album={album}
                 selectedTracks={selectedTracks}
@@ -107,7 +125,8 @@ const AlbumList = (props) => {
               />
             );
           })}
-        </FlipMove>
+        </ol>
+        {/* </FlipMove> */}
       </div>
     </section>
   );

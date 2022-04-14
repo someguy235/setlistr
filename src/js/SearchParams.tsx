@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
-import BandList from "./BandList.js";
-import TrackList from "./TrackList.js";
-import AlbumList from "./AlbumList.js";
-import LoadingSpinner from "./LoadingSpinner.js";
+import BandList from "./BandList";
+import TrackList from "./TrackList";
+import AlbumList from "./AlbumList";
+import LoadingSpinner from "./LoadingSpinner";
 
 const SearchParams = () => {
   const [bandInput, setBandInput] = useState("");
@@ -32,7 +32,7 @@ const SearchParams = () => {
   }, [bandId]);
 
   useEffect(() => {
-    if (!bandId) return null;
+    if (!bandId) return;
     getAlbumInfo();
   }, [bandId, getAlbumInfo]);
 

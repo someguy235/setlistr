@@ -1,31 +1,64 @@
-import { forwardRef, useCallback, useEffect, useState } from "react";
-import FlipMove from "react-flip-move";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useState,
+  FunctionComponent,
+} from "react";
+import { Album, Band, Track } from "./types";
+// import FlipMove from "react-flip-move";
 
-const FunctionalTrackItem = forwardRef((props, ref) => (
-  <li className="track-name-container" ref={ref}>
-    <TrackItem props={props} />
-  </li>
-));
-FunctionalTrackItem.displayName = "FunctionalTrackItem";
+// type Track = {};
 
-const TrackItem = ({ props }) => {
-  const { track, toggleTrack } = props;
-  return (
-    <button
-      className={"track-button" + (track.selected ? " selected" : "")}
-      onClick={() => toggleTrack(track.name)}
-    >
-      {`${track.name} [${track.count}]`}
-    </button>
-  );
+// const FunctionalTrackItem = forwardRef((props, ref) => (
+//   <li className="track-name-container" ref={ref}>
+//     <TrackItem props={props} />
+//   </li>
+// ));
+
+type TrackItemProps = {
+  track: Track;
+  toggleTrack: Function;
 };
 
-const TrackList = (props) => {
+const FunctionalTrackItem = forwardRef<HTMLButtonElement, TrackItemProps>(
+  (props, ref) => (
+    <li className="track-name-container">
+      <button
+        className={"track-button" + (props.track.selected ? " selected" : "")}
+        onClick={() => props.toggleTrack(props.track.name)}
+      >
+        {`${props.track.name} [${props.track.count}]`}
+      </button>
+    </li>
+  )
+);
+FunctionalTrackItem.displayName = "FunctionalTrackItem";
+
+// const TrackItem: FunctionComponent = ({ props }) => {
+//   const { track: Track, toggleTrack } = props;
+//   return (
+//     <button
+//       className={"track-button" + (track.selected ? " selected" : "")}
+//       onClick={() => toggleTrack(track.name)}
+//     >
+//       {`${track.name} [${track.count}]`}
+//     </button>
+//   );
+// };
+
+type TrackListProps = {
+  bands: Band[];
+  albums: Album[];
+  tracks: Track[];
+  setTracks: Function;
+};
+const TrackList = (props: TrackListProps) => {
   const { bands, albums, tracks, setTracks } = props;
   const [sort, setSort] = useState("alpha");
 
   const getTrackInfo = useCallback((albums, setTracks) => {
-    const tracks = [];
+    const tracks: Track[] = [];
 
     for (const album of albums) {
       for (const track of album.tracks) {
@@ -45,26 +78,26 @@ const TrackList = (props) => {
     setTracks(tracks);
   }, []);
 
-  const getSortFn = (type) => {
+  const getSortFn = (type: string) => {
     let sortFn;
     switch (type) {
       case "alpha":
-        sortFn = (a, b) => {
+        sortFn = (a: Track, b: Track) => {
           return a.name < b.name ? -1 : 1;
         };
         break;
       case "alpha-rev":
-        sortFn = (a, b) => {
+        sortFn = (a: Track, b: Track) => {
           return a.name > b.name ? -1 : 1;
         };
         break;
       case "count":
-        sortFn = (a, b) => {
+        sortFn = (a: Track, b: Track) => {
           return a.count < b.count ? -1 : 1;
         };
         break;
       case "count-rev":
-        sortFn = (a, b) => {
+        sortFn = (a: Track, b: Track) => {
           return a.count > b.count ? -1 : 1;
         };
         break;
@@ -72,8 +105,8 @@ const TrackList = (props) => {
     return sortFn;
   };
 
-  const updateSort = (type) => {
-    let t;
+  const updateSort = (type: string) => {
+    let t: string = "";
     switch (type) {
       case "alpha":
         t = sort === "alpha" ? "alpha-rev" : "alpha";
@@ -92,7 +125,7 @@ const TrackList = (props) => {
     setTracks(resetTracks);
   };
 
-  const toggleTrack = (trackName) => {
+  const toggleTrack = (trackName: string) => {
     let foundIdx = tracks.findIndex((track) => track.name === trackName);
     tracks[foundIdx].selected = !tracks[foundIdx].selected;
     setTracks([...tracks]);
@@ -147,7 +180,8 @@ const TrackList = (props) => {
         </li>
       </menu>
       <div id="track-list-container">
-        <FlipMove duration={500} staggerDurationBy={10} typeName="ul">
+        {/* <FlipMove duration={500} staggerDurationBy={10} typeName="ul"> */}
+        <ul>
           {tracks.sort(getSortFn(sort)).map((track) => {
             return (
               <FunctionalTrackItem
@@ -157,7 +191,8 @@ const TrackList = (props) => {
               />
             );
           })}
-        </FlipMove>
+        </ul>
+        {/* </FlipMove> */}
       </div>
     </section>
   );
