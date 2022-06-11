@@ -180,7 +180,7 @@ const TrackList = (props: TrackListProps) => {
         </li>
       </menu>
       <div id="track-list-container">
-        {/* <FlipMove duration={500} staggerDurationBy={10} typeName="ul"> */}
+        {/* <FlipMove duration={500} staggerDurationBy={11} typeName="ul"> */}
         <ul>
           {tracks.sort(getSortFn(sort)).map((track) => {
             return (
