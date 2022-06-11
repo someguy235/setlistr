@@ -143,7 +143,7 @@ const TrackList = (props: TrackListProps) => {
     "Count " +
     (sort === "count"
       ? String.fromCharCode(8593) // up arrow
-      : sort === "counts-rev"
+      : sort === "count-rev"
       ? String.fromCharCode(8595) // down arrow
       : "");
 
