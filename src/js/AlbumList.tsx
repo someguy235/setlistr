@@ -1,6 +1,6 @@
-import { forwardRef, useState } from "react";
+import { useState } from "react";
+import { Flipper, Flipped } from "react-flip-toolkit";
 import { Band, Track, Album } from "./types";
-// import FlipMove from "react-flip-move";
 
 const calculateAlbumScores = (albums: Album[], tracks: Track[]) => {
   const scores: { [key: string]: number } = {};
@@ -26,18 +26,12 @@ const calculateAlbumScores = (albums: Album[], tracks: Track[]) => {
   });
 };
 
-// const FunctionalAlbumItem = forwardRef((props, ref) => (
-//   <li className="album-entry-container" ref={ref}>
-//     <AlbumItem props={props} />
-//   </li>
-// ));
-// FunctionalAlbumItem.displayName = "FunctionalAlbumItem";
-
 type AlbumItemProps = {
   album: Album;
   selectedTracks: string[];
   showTracks: boolean;
 };
+
 const AlbumItem = (props: AlbumItemProps) => {
   const { album, selectedTracks, showTracks } = props;
   const tracks = showTracks
@@ -54,24 +48,26 @@ const AlbumItem = (props: AlbumItemProps) => {
     : null;
 
   return (
-    <li className="album-entry-container">
-      <div className="album-entry">
-        <div>
-          <a
-            href={"https://open.spotify.com/album/" + album.id}
-            target="_blank"
-            rel="noreferrer"
-          >
-            <img alt="album cover art" src={album.img} />
-          </a>
+    <Flipped flipId={album.name}>
+      <li className="album-entry-container">
+        <div className="album-entry">
+          <div>
+            <a
+              href={"https://open.spotify.com/album/" + album.id}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img alt="album cover art" src={album.img} />
+            </a>
+          </div>
+          <div className="track-title">{album.name}</div>
+          <div className={"track-score"}>
+            {album.score}/{album.tracks.length}
+          </div>
+          <ol>{tracks}</ol>
         </div>
-        <div className="track-title">{album.name}</div>
-        <div className={"track-score"}>
-          {album.score}/{album.tracks.length}
-        </div>
-        <ol>{tracks}</ol>
-      </div>
-    </li>
+      </li>
+    </Flipped>
   );
 };
 
@@ -90,6 +86,7 @@ type AlbumListProps = {
   albums: Album[];
   tracks: Track[];
 };
+
 const AlbumList = (props: AlbumListProps) => {
   const { bands, albums, tracks } = props;
   const [showTracks, setShowTracks] = useState(false);
@@ -113,20 +110,20 @@ const AlbumList = (props: AlbumListProps) => {
         </li>
       </menu>
       <div id="albums-container">
-        {/* <FlipMove duration={500} staggerDurationBy={30} typeName="ol"> */}
-        <ol>
-          {displayAlbums.map((album) => {
-            return (
-              <AlbumItem
-                key={album.id}
-                album={album}
-                selectedTracks={selectedTracks}
-                showTracks={showTracks}
-              />
-            );
-          })}
-        </ol>
-        {/* </FlipMove> */}
+        <Flipper flipKey={displayAlbums}>
+          <ol>
+            {displayAlbums.map((album) => {
+              return (
+                <AlbumItem
+                  key={album.id}
+                  album={album}
+                  selectedTracks={selectedTracks}
+                  showTracks={showTracks}
+                />
+              );
+            })}
+          </ol>
+        </Flipper>
       </div>
     </section>
   );

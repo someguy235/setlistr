@@ -1,51 +1,26 @@
-import {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useState,
-  FunctionComponent,
-} from "react";
+import { useCallback, useEffect, useState } from "react";
+import { Flipper, Flipped } from "react-flip-toolkit";
 import { Album, Band, Track } from "./types";
-// import FlipMove from "react-flip-move";
-
-// type Track = {};
-
-// const FunctionalTrackItem = forwardRef((props, ref) => (
-//   <li className="track-name-container" ref={ref}>
-//     <TrackItem props={props} />
-//   </li>
-// ));
 
 type TrackItemProps = {
   track: Track;
   toggleTrack: Function;
 };
 
-const FunctionalTrackItem = forwardRef<HTMLButtonElement, TrackItemProps>(
-  (props, ref) => (
-    <li className="track-name-container">
-      <button
-        className={"track-button" + (props.track.selected ? " selected" : "")}
-        onClick={() => props.toggleTrack(props.track.name)}
-      >
-        {`${props.track.name} [${props.track.count}]`}
-      </button>
-    </li>
-  )
-);
-FunctionalTrackItem.displayName = "FunctionalTrackItem";
-
-// const TrackItem: FunctionComponent = ({ props }) => {
-//   const { track: Track, toggleTrack } = props;
-//   return (
-//     <button
-//       className={"track-button" + (track.selected ? " selected" : "")}
-//       onClick={() => toggleTrack(track.name)}
-//     >
-//       {`${track.name} [${track.count}]`}
-//     </button>
-//   );
-// };
+const TrackItem = (props: TrackItemProps) => {
+  return (
+    <Flipped flipId={props.track.name}>
+      <li className="track-name-container">
+        <button
+          className={"track-button" + (props.track.selected ? " selected" : "")}
+          onClick={() => props.toggleTrack(props.track.name)}
+        >
+          {`${props.track.name} [${props.track.count}]`}
+        </button>
+      </li>
+    </Flipped>
+  );
+};
 
 type TrackListProps = {
   bands: Band[];
@@ -151,6 +126,11 @@ const TrackList = (props: TrackListProps) => {
     getTrackInfo(albums, setTracks);
   }, [albums, getTrackInfo, setTracks]);
 
+  useEffect(() => {
+    const st = tracks.sort(getSortFn(sort)).slice();
+    setTracks(st);
+  }, [sort]);
+
   if (albums.length === 0) return null;
   if (bands.length > 1) return null;
 
@@ -180,19 +160,17 @@ const TrackList = (props: TrackListProps) => {
         </li>
       </menu>
       <div id="track-list-container">
-        {/* <FlipMove duration={500} staggerDurationBy={11} typeName="ul"> */}
-        <ul>
-          {tracks.sort(getSortFn(sort)).map((track) => {
-            return (
-              <FunctionalTrackItem
+        <Flipper flipKey={tracks}>
+          <ul>
+            {tracks.map((track) => (
+              <TrackItem
                 key={track.name}
                 track={track}
                 toggleTrack={toggleTrack}
               />
-            );
-          })}
-        </ul>
-        {/* </FlipMove> */}
+            ))}
+          </ul>
+        </Flipper>
       </div>
     </section>
   );

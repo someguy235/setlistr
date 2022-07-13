@@ -1,5 +1,4 @@
-import { forwardRef } from "react";
-// import * as FlipMove from "react-flip-move";
+import { Flipper, Flipped } from "react-flip-toolkit";
 import { Band } from "./types";
 
 type BandItemProps = {
@@ -7,40 +6,21 @@ type BandItemProps = {
   handleChange: Function;
 };
 
-// const FunctionalBandItem = forwardRef((props: BandItemProps, ref) => (
-//   <li className="band-option" key={props.band.id} ref={ref}>
-//     <BandItem props={props} />
-//   </li>
-// ));
-const FunctionalBandItem = forwardRef<HTMLButtonElement, BandItemProps>(
-  (props, ref) => (
-    <li className="band-option">
+const BandItem = (props: BandItemProps) => {
+  const { band, handleChange } = props;
+
+  return (
+    <Flipped flipId={band.name}>
       <button
-        data-bandname={props.band.name}
-        data-bandid={props.band.id}
-        onClick={(e) => props.handleChange(e)}
-        ref={ref}
+        data-bandname={band.name}
+        data-bandid={band.id}
+        onClick={(e) => handleChange(e)}
       >
-        {props.band.name}
+        {band.name}
       </button>
-    </li>
-  )
-);
-
-FunctionalBandItem.displayName = "FunctionalBandItem";
-
-// const BandItem = (props: BandItemProps) => {
-//   const { band, handleChange } = props;
-//   return (
-//     <button
-//       data-bandname={band.name}
-//       data-bandid={band.id}
-//       onClick={(e) => handleChange(e)}
-//     >
-//       {band.name}
-//     </button>
-//   );
-// };
+    </Flipped>
+  );
+};
 
 type BandListProps = {
   bands: Array<Band>;
@@ -66,19 +46,15 @@ const BandList = (props: BandListProps) => {
 
   return (
     <section id="band-options">
-      {/* <FlipMove duration={500} staggerDurationBy={10} typeName="ul"> */}
-      <ul>
-        {bands.map((band) => {
-          return (
-            <FunctionalBandItem
-              band={band}
-              handleChange={handleChange}
-              key={band.id}
-            />
-          );
-        })}
-      </ul>
-      {/* </FlipMove> */}
+      <Flipper flipKey={bands}>
+        <ul>
+          {bands.map((band) => (
+            <li className="band-option" key={band.id}>
+              <BandItem band={band} handleChange={handleChange} />
+            </li>
+          ))}
+        </ul>
+      </Flipper>
     </section>
   );
 };
