@@ -48,7 +48,7 @@ const AlbumItem = (props: AlbumItemProps) => {
     : null;
 
   return (
-    <Flipped flipId={album.name}>
+    <Flipped flipId={album.name} translate={true}>
       <li className="album-entry-container">
         <div className="album-entry">
           <div>
