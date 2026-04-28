@@ -89,7 +89,7 @@ const getTracks = async (albumId) => {
     return rTrack;
   });
 
-  return new Set(trackNames);
+  return [...new Set(trackNames)];
 };
 
 const getImage = async (url) => {
