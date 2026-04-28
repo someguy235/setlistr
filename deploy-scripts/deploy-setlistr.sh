@@ -2,6 +2,12 @@
 
 echo ""
 
+echo "sourcing .bashrc for nvm..."
+# Load profile so NVM and its PATH additions are available in non-login shells
+export HOME="${HOME:-$(eval echo ~$(whoami))}"
+[ -f "$HOME/.bash_profile" ] && source "$HOME/.bash_profile"
+[ -f "$HOME/.bashrc" ] && source "$HOME/.bashrc"
+
 echo "killing pm2 process..."
 pm2 stop setlistr-server
 

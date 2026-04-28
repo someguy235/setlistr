@@ -1,8 +1,10 @@
-const express = require("express");
-const fetch = require("node-fetch");
-const _ = require("underscore");
+import express from "express";
+import fetch from "node-fetch";
+import { MongoClient } from "mongodb";
+import { createRequire } from "module";
+
+const require = createRequire(import.meta.url);
 const secret = require("./secret.json");
-const MongoClient = require("mongodb").MongoClient;
 
 const PORT = process.env.PORT || 3001;
 
@@ -34,7 +36,6 @@ function tokenIsExpired() {
 async function requestBearerToken() {
   const response = await fetch(AUTH_BASE, {
     method: "POST",
-    mode: "cors",
     headers: {
       Authorization: "Basic " + ENCODED_ID,
       "Content-Type": "application/x-www-form-urlencoded",
@@ -50,6 +51,7 @@ async function getBearerToken() {
     const token = json["access_token"];
     const expires = json["expires_in"];
     bearerToken = token;
+    console.log(bearerToken);
     setNewExpires(expires);
     return token;
   } else {
@@ -69,35 +71,31 @@ const getTracks = async (albumId) => {
     console.log(err);
   });
 
-  const albumJson = await albumInfo.json(); //.tracks; //.items;
+  const albumJson = await albumInfo.json();
   const albumTracks = albumJson.tracks.items;
 
   const trackNames = albumTracks.map((track) => {
     let rTrack = track.name.split(" - ")[0];
     rTrack = rTrack.toLowerCase();
 
-    // remove trailing 'Pt. 1' 'Pt. 2' variations
     const ptRegex = /,?\s?pt\.?\s?[123]$/i;
     rTrack = rTrack.replace(ptRegex, "");
 
-    // remove trailing info in parentheses
     const trailingParensRegex = /\s*\([\s\w]*\)$/i;
     rTrack = rTrack.replace(trailingParensRegex, "");
 
-    // remove dashes
     rTrack = rTrack.replace("-", " ");
 
     return rTrack;
   });
 
-  return _.uniq(trackNames);
+  return new Set(trackNames);
 };
 
 const getImage = async (url) => {
   const r = await fetch(url);
-  const buf = await r.buffer();
-  const st = "data:image/png;base64," + buf.toString("base64");
-  return st;
+  const buf = await r.arrayBuffer();
+  return "data:image/png;base64," + Buffer.from(buf).toString("base64");
 };
 
 const getAlbumInfo = async (album) => {
@@ -115,22 +113,11 @@ const getAlbumInfo = async (album) => {
   const img = await getImage(imgurl);
   const tracks = await getTracks(id);
 
-  const albumObj = {
-    artist: artist,
-    name: name,
-    id: id,
-    release: release,
-    img: img,
-    tracks: tracks,
-  };
-
-  return albumObj;
+  return { artist, name, id, release, img, tracks };
 };
 
 const getAlbumsInfo = async (bandId, collection, result) => {
-  const cachedAlbumNames = result.map((album) => {
-    return album.name;
-  });
+  const cachedAlbumNames = result.map((album) => album.name);
   console.log(cachedAlbumNames);
   const allAlbumInfo = [...result];
   const newAlbumInfo = [];
@@ -183,23 +170,11 @@ app.get("/setlistr/api/bands/:search", async (req, res) => {
 });
 
 app.get("/setlistr/api/albums/:band", async (req, res) => {
-  MongoClient.connect(DB_CONN, async function (err, client) {
-    if (err) throw err;
-
-    const db = client.db("setListr");
-    const collection = db.collection("albums");
-    await collection
-      .find({ bandId: req.params.band })
-      .toArray(async function (err, result) {
-        if (err) throw err;
-        const liveResults = await getAlbumsInfo(
-          req.params.band,
-          collection,
-          result
-        );
-        res.json({ albums: liveResults });
-      });
-  });
+  const client = await MongoClient.connect(DB_CONN);
+  const collection = client.db("setListr").collection("albums");
+  const result = await collection.find({ bandId: req.params.band }).toArray();
+  const liveResults = await getAlbumsInfo(req.params.band, collection, result);
+  res.json({ albums: liveResults });
 });
 
 app.listen(PORT, () => {
