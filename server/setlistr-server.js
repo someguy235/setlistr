@@ -51,7 +51,6 @@ async function getBearerToken() {
     const token = json["access_token"];
     const expires = json["expires_in"];
     bearerToken = token;
-    console.log(bearerToken);
     setNewExpires(expires);
     return token;
   } else {
@@ -68,7 +67,7 @@ const getTracks = async (albumId) => {
       Authorization: "Bearer " + token,
     },
   }).catch((err) => {
-    console.log(err);
+    console.error(err);
   });
 
   const albumJson = await albumInfo.json();
@@ -118,7 +117,7 @@ const getAlbumInfo = async (album) => {
 
 const getAlbumsInfo = async (bandId, collection, result) => {
   const cachedAlbumNames = result.map((album) => album.name);
-  console.log(cachedAlbumNames);
+  // console.log(cachedAlbumNames);
   const allAlbumInfo = [...result];
   const newAlbumInfo = [];
 

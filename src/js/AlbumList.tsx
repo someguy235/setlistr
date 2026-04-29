@@ -115,7 +115,7 @@ const AlbumList = (props: AlbumListProps) => {
             {displayAlbums.map((album) => {
               return (
                 <AlbumItem
-                  key={album.id}
+                  key={album.name}
                   album={album}
                   selectedTracks={selectedTracks}
                   showTracks={showTracks}
